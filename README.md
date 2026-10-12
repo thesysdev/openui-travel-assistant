@@ -45,7 +45,9 @@ Other data comes from keyless public services: [OpenFreeMap](https://openfreemap
 
 ## Storage and privacy
 
-Nothing is stored on a server. Trips, chats, itineraries, moodboards, journals and booking threads live in each visitor's browser (localStorage). The routes are stateless: the booking chat's browser sends its thread and only questions and answers are forwarded, and the planner and journal send the trip's earlier turns with each request. Every completion is sent with `store: false`.
+Booking threads are stored in OpenUI Gateway as conversations. There's no sign-in, so each browser tab session makes up an anonymous visitor id (`openui_travel_<uuid>`, the same format as the OpenUI docs chat) and sends it in the `x-openui-cloud-user-id` header. `/api/frontend-token` mints a short-lived frontend token scoped to that id, which the thread list uses, and the chat route reads a thread's earlier turns with that token, so Gateway refuses a thread that belongs to someone else. Each turn, including its tool calls and results, is then appended with the API key. Closing the tab drops the id, so its threads can no longer be opened; Gateway keeps them until they are deleted.
+
+Everything else (trips, chats, itineraries, moodboards and journals) lives in each visitor's browser (localStorage). Those routes are stateless: the planner and journal send the trip's earlier turns with each request, and their completions are sent with `store: false`.
 
 The app has no sign-in. Every POST route accepts requests only from the app's own pages: one with no `Origin` header (a script, `curl`) is refused, so it can't spend Gateway credit from outside. There's no rate limiting, so add some before promoting the demo widely.
 
@@ -67,7 +69,7 @@ Before deploying publicly:
 | `src/app/moodboard/`, `src/moodboard/` | The moodboard page and its tldraw canvas, pieces and Trips panel |
 | `src/components/booking-chat.tsx` | The booking chat (Agent Interface), at `/booking` |
 | `src/app/api/` | One route per agent and data source; `planner/agent.ts` is the shared streaming loop with `search_stays` |
-| `src/lib/` | Prompts, the trivago MCP client and `search_stays` tool, local thread storage, the origin check |
+| `src/lib/` | Prompts, the trivago MCP client and `search_stays` tool, the visitor id, frontend tokens and Gateway thread history, the origin check |
 | `src/design-system/` | Fonts and colour tokens shared by the planner and the journal |
 | `public/icons-3d/` | 3D place, follow-up and weather icons (`<place>-pixar.webp`) |
 
