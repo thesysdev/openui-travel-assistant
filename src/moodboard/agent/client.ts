@@ -24,6 +24,7 @@ export async function* readEvents(body: ReadableStream<Uint8Array<ArrayBuffer>>)
 
 // Each completion is one segment. The Gateway can wrap a completion in content markers and add
 // a second, merged copy, so keep each segment's first block, then join them for parseReply().
+// (Not parseMessage(): it keeps the last block, the merged copy without the pieces' headers.)
 export function joinSegments(segments: string[]) {
   return segments
     .map((text = "") => {

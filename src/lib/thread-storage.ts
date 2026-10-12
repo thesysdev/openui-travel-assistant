@@ -1,3 +1,4 @@
+import { parseMessage } from "@openuidev/lang-core";
 import type { ChatStorage, Message, Thread } from "@openuidev/react-headless";
 
 /*
@@ -30,11 +31,10 @@ function write(key: string, value: unknown) {
 
 const readThreads = () => read<Thread[]>(THREADS_KEY, []);
 
-// A thread's title: the first line of its first question, without Agent Interface's envelope.
+// A thread's title: the first line of its first question, without OpenUI's message envelope.
 function titleOf(content: Message["content"]) {
-  const text = typeof content === "string" ? content : "";
-  const line = text.split("\n").find((l) => l.trim() && !l.includes("]]>openui:"));
-  return line?.trim().slice(0, 80) || "New trip";
+  const text = typeof content === "string" ? parseMessage(content).content : "";
+  return text.split("\n").find((l) => l.trim())?.trim().slice(0, 80) || "New trip";
 }
 
 // Only for a thread still in the list, so a save that lands after a delete leaves nothing behind.
