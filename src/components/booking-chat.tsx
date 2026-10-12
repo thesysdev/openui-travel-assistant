@@ -7,13 +7,21 @@ import {
   openAIReadableStreamAdapter,
   useSystemThemeMode,
 } from "@openuidev/react-ui";
-import { useOpenuiCloudStorage } from "@openuidev/react-headless";
+import { useThread, useThreadList } from "@openuidev/react-headless";
 import { Briefcase, CalendarDays, Users, Wallet } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { darkTheme, lightTheme } from "../lib/theme";
 import { library } from "../library";
-import { getOrCreateUserId, USER_ID_HEADER } from "../lib/user-id";
+import { localThreadStorage, saveMessages } from "../lib/thread-storage";
 import { BackHome } from "./back-home";
+
+// The route is stateless, so openAIMessageFormat sends the whole thread every turn; the runner's
+// stream comes back as NDJSON.
+const llm = fetchLLM({
+  url: "/api/chat",
+  streamAdapter: openAIReadableStreamAdapter(),
+  messageFormat: openAIMessageFormat,
+});
 
 const starters = [
   {
@@ -40,42 +48,33 @@ const starters = [
   },
 ];
 
+// Keeps each thread's messages in this browser's local storage: right away when a run ends, and
+// at most once a second while one streams. Rendered inside Agent Interface, so it sees the thread.
+function PersistThread() {
+  const threadId = useThreadList((s) => s.selectedThreadId);
+  const messages = useThread((s) => s.messages);
+  const isRunning = useThread((s) => s.isRunning);
+  const isLoading = useThread((s) => s.isLoadingMessages);
+  const lastSave = useRef(0);
+  useEffect(() => {
+    if (!threadId || isLoading || !messages.length) return;
+    const now = Date.now();
+    if (isRunning && now - lastSave.current < 1000) return;
+    lastSave.current = now;
+    saveMessages(threadId, messages);
+  }, [threadId, messages, isRunning, isLoading]);
+  return null;
+}
+
 export default function BookingChat() {
   const mode = useSystemThemeMode();
   const theme = useMemo(() => ({ mode, lightTheme, darkTheme }), [mode]);
-  // Threads are Gateway conversations, which the browser reaches with a short-lived token from
-  // /api/frontend-token, scoped to this tab session's anonymous visitor id (as in the OpenUI docs
-  // chat). The route loads a thread's earlier turns itself, reading as this visitor, uses only
-  // the new question, and appends the turn, so a reopened thread loads it.
-  const [userId] = useState(getOrCreateUserId);
-  const [llm] = useState(() =>
-    fetchLLM({
-      url: "/api/chat",
-      streamAdapter: openAIReadableStreamAdapter(),
-      messageFormat: openAIMessageFormat,
-      headers: { [USER_ID_HEADER]: userId },
-    }),
-  );
-  const tokenFetch = useMemo<typeof fetch>(
-    () => (input, init) => {
-      if (input !== "/api/frontend-token") return fetch(input, init);
-      const headers = new Headers(init?.headers);
-      headers.set(USER_ID_HEADER, userId);
-      return fetch(input, { ...init, headers });
-    },
-    [userId],
-  );
-  const storage = useOpenuiCloudStorage({
-    token: "/api/frontend-token",
-    features: { artifact: false },
-    fetch: tokenFetch,
-  });
   return (
     <div className="booking-app">
       <BackHome />
       <AgentInterface
         llm={llm}
-        storage={storage}
+        storage={localThreadStorage}
         componentLibrary={library}
         agentName="Stay finder"
         logoUrl="/logo.svg"
@@ -98,6 +97,7 @@ export default function BookingChat() {
           description="Describe your trip in your own words. I'll turn it into a form with what I understood, ask only for what's missing, and find stays with live prices."
         />
         <AgentInterface.Composer placeholder="Describe your trip…" />
+        <PersistThread />
       </AgentInterface>
     </div>
   );
