@@ -1,15 +1,15 @@
 /* The horizontal journal. One strip of full pages that snaps page by page; every page is
    either an entry page the agent wrote or the whole-page prompt at the end. */
 
-.journal-page :where(h1, h2, p, ul, figure) {
+.planner-page :where(h1, h2, p, ul, figure) {
   margin: 0;
   padding: 0;
   font-weight: inherit;
 }
 
 /* No rubber-band bounce around the journal or its sheet: the page itself never scrolls. */
-html:has(.journal-page),
-html:has(.journal-page) body {
+html:has(.planner-page),
+html:has(.planner-page) body {
   overflow: hidden;
   overscroll-behavior: none;
 }
@@ -28,7 +28,7 @@ html:has(.journal-page) body {
   --panel: calc(9 * var(--col) + 8 * var(--gutter));
   --content: calc(100vw - var(--grid-left) - var(--grid-right));
 }
-.hj-strip {
+:where(.planner-page) .hj-strip {
   display: flex;
   align-items: flex-start;
   box-sizing: border-box;
@@ -42,23 +42,23 @@ html:has(.journal-page) body {
   scrollbar-width: none;
   container-type: size;
 }
-.hj-strip::-webkit-scrollbar {
+:where(.planner-page) .hj-strip::-webkit-scrollbar {
   display: none;
 }
 /* While a reply is written, room after the newest page, so the first spread can glide all the
    way to the grid's left edge before the rest of the reply exists. */
-.hj-strip.is-writing::after {
+:where(.planner-page) .hj-strip.is-writing::after {
   content: "";
   flex: 0 0 calc(100vw - var(--grid-left) - var(--grid-right));
 }
 
 /* An entry's pages sit directly in the strip, through the Renderer's wrapper divs. */
-.hj-entry,
-.hj-entry div:not(.hj-page div) {
+:where(.planner-page) .hj-entry,
+:where(.planner-page) .hj-entry div:not(.hj-page div) {
   display: contents;
 }
 
-.hj-page {
+:where(.planner-page) .hj-page {
   position: relative;
   box-sizing: border-box;
   flex: 0 0 var(--panel);
@@ -68,7 +68,7 @@ html:has(.journal-page) body {
   border-radius: 28px;
 }
 @supports (corner-shape: squircle) {
-  .hj-page {
+  :where(.planner-page) .hj-page {
     border-radius: 48px;
     corner-shape: squircle;
   }
@@ -79,7 +79,7 @@ html:has(.journal-page) body {
    height) and resting height (--y, 0 at the top to 1 at the bottom). Width scales with height,
    so the spreads (sized in cq units) keep their proportions. Every size comes from the page's
    kind alone, never from its neighbours, so a page arriving never moves the ones before it. */
-.hj-page {
+:where(.planner-page) .hj-page {
   --span: 9;
   --h: 1;
   --y: 0.5;
@@ -89,119 +89,119 @@ html:has(.journal-page) body {
   height: calc(100cqh * var(--h));
   margin-top: calc((100cqh - 100cqh * var(--h)) * var(--y));
 }
-.hj-sentence,
-.hj-price {
+:where(.planner-page) .hj-sentence,
+:where(.planner-page) .hj-price {
   --span: 7;
 }
-.hj-quote,
-.hj-versus {
+:where(.planner-page) .hj-quote,
+:where(.planner-page) .hj-versus {
   --span: 8;
 }
-.hj-said,
-.hj-checklist {
+:where(.planner-page) .hj-said,
+:where(.planner-page) .hj-checklist {
   --span: 9;
 }
-.hj-bleed {
+:where(.planner-page) .hj-bleed {
   --span: 9;
 }
-.hj-split,
-.hj-trio {
+:where(.planner-page) .hj-split,
+:where(.planner-page) .hj-trio {
   --span: 10;
 }
-.hj-mosaic {
+:where(.planner-page) .hj-mosaic {
   --span: 12;
 }
 /* Two stops take 7 columns, and each further stop adds 3, up to the full 12. */
-.hj-route {
+:where(.planner-page) .hj-route {
   --span: min(12, calc(1 + 3 * var(--n, 2)));
 }
-.hj-stays {
+:where(.planner-page) .hj-stays {
   --span: min(12, calc(3 * var(--n, 3)));
 }
 /* The steps that steer the conversation: a question or a follow-up is narrow; picks grow by two
    columns a destination. */
-.hj-question {
+:where(.planner-page) .hj-question {
   --span: 8;
 }
-.hj-next {
+:where(.planner-page) .hj-next {
   --span: 7;
 }
 /* Dates holds two columns of suggested windows, so it takes a column more. */
-.hj-dates {
+:where(.planner-page) .hj-dates {
   --span: 8;
 }
 /* The Map spread: a wide page, the stops beside the map. */
-.hj-map {
+:where(.planner-page) .hj-map {
   --span: 11;
 }
 /* The itinerary in brief grows by two columns a day. */
-.hj-itin {
+:where(.planner-page) .hj-itin {
   --span: min(12, calc(3 + 2 * var(--n, 3)));
 }
-.hj-picks {
+:where(.planner-page) .hj-picks {
   --span: min(12, calc(2 + 2 * var(--n, 3)));
 }
 /* The board: photo-led pages vary most, a short spread (a quote, a price, a sentence) is drawn
    small, and the pages you read or tap through (dates, checklists, stays, the map) stay close to
    full height so their type keeps its size. Heights alternate high and low along a reply. */
-.hj-bleed {
+:where(.planner-page) .hj-bleed {
   --h: 0.88;
   --y: 0;
 }
-.hj-route {
+:where(.planner-page) .hj-route {
   --h: 0.74;
   --y: 0.75;
 }
-.hj-split {
+:where(.planner-page) .hj-split {
   --h: 0.92;
   --y: 1;
 }
-.hj-mosaic {
+:where(.planner-page) .hj-mosaic {
   --h: 1;
 }
-.hj-trio {
+:where(.planner-page) .hj-trio {
   --h: 0.8;
   --y: 0.1;
 }
-.hj-checklist {
+:where(.planner-page) .hj-checklist {
   --h: 0.92;
   --y: 1;
 }
-.hj-dates {
+:where(.planner-page) .hj-dates {
   --h: 0.9;
   --y: 0.2;
 }
-.hj-sentence {
+:where(.planner-page) .hj-sentence {
   --h: 0.72;
   --y: 0.8;
 }
-.hj-quote {
+:where(.planner-page) .hj-quote {
   --h: 0.7;
   --y: 0.2;
 }
-.hj-price {
+:where(.planner-page) .hj-price {
   --h: 0.7;
   --y: 0.6;
 }
-.hj-versus {
+:where(.planner-page) .hj-versus {
   --h: 0.82;
   --y: 0.35;
 }
-.hj-map,
-.hj-stays {
+:where(.planner-page) .hj-map,
+:where(.planner-page) .hj-stays {
   --h: 0.94;
   --y: 0.6;
 }
-.hj-itin,
-.hj-picks {
+:where(.planner-page) .hj-itin,
+:where(.planner-page) .hj-picks {
   --h: 0.88;
   --y: 0.3;
 }
-.hj-question {
+:where(.planner-page) .hj-question {
   --h: 0.8;
   --y: 0.6;
 }
-.hj-next {
+:where(.planner-page) .hj-next {
   --h: 0.76;
   --y: 0.4;
 }
@@ -211,36 +211,36 @@ html:has(.journal-page) body {
   background: transparent;
 }
 /* Inside a panel the spreads no longer clear the floating pill, only their own edge. */
-.hj-spread {
+:where(.planner-page) .hj-spread {
   --pad-left: max(32px, 4vw);
 }
 /* The home page and your messages are plain type on the canvas: no panel behind them. The
    home page spans the full grid; the strip's padding already gives it the margins. */
-.hj-page.pl-home {
+:where(.planner-page) .hj-page.pl-home {
   flex-basis: var(--content);
   width: var(--content);
   padding: 0;
   border-radius: 0;
   overflow: visible;
 }
-.hj-ask {
+:where(.planner-page) .hj-ask {
   border-radius: 0;
   overflow: visible;
 }
 /* The "Where next?" page follows a panel, so it keeps clear of it like your messages do. */
-.hj-page.pl-home.pl-next {
+:where(.planner-page) .hj-page.pl-home.pl-next {
   padding-left: max(40px, 4vw);
 }
 /* Your message between panels keeps clear of its neighbours on both sides. */
-.hj-ask.hj-said {
+:where(.planner-page) .hj-ask.hj-said {
   padding-inline: max(40px, 4vw);
 }
 /* The home page is the only page of a new plan, so there is nothing to scroll to. (Only when it
    is alone: the "Where next?" page shares its layout and class, and must not lock the strip.) */
-.hj-strip:has(> .pl-home:only-child) {
+:where(.planner-page) .hj-strip:has(> .pl-home:only-child) {
   overflow-x: hidden;
 }
-.hj-strip:has(> .pl-home:only-child)::after {
+:where(.planner-page) .hj-strip:has(> .pl-home:only-child)::after {
   display: none;
 }
 /* A finished journal ends on the "Where next?" page, which already spans the grid, so the
@@ -249,18 +249,18 @@ html:has(.journal-page) body {
 
 /* ---------- The whole-page prompt ---------- */
 
-.hj-ask {
+:where(.planner-page) .hj-ask {
   display: flex;
   align-items: center;
   padding: 0;
 }
-.hj-ask__form {
+:where(.planner-page) .hj-ask__form {
   display: flex;
   flex-direction: column;
   gap: 32px;
   width: 100%;
 }
-.hj-ask__text {
+:where(.planner-page) .hj-ask__text {
   box-sizing: border-box;
   min-height: 3.06em;
   width: 100%;
@@ -277,19 +277,19 @@ html:has(.journal-page) body {
   color: var(--ds-color-ink);
   caret-color: var(--ds-color-accent);
 }
-.hj-ask textarea::placeholder {
+:where(.planner-page) .hj-ask textarea::placeholder {
   color: var(--ds-color-ink-disabled);
 }
 /* A sent message keeps the prompt's place and size, in full ink. The foot line breathes
    while the entry is being written. */
-.hj-said .hj-ask__text {
+:where(.planner-page) .hj-said .hj-ask__text {
   overflow-wrap: anywhere;
 }
-.hj-said .hj-ask__foot {
+:where(.planner-page) .hj-said .hj-ask__foot {
   min-height: 56px;
 }
 /* While the entry is being written, the rule under your message breathes in the accent. */
-.hj-said .hj-ask__foot.is-writing {
+:where(.planner-page) .hj-said .hj-ask__foot.is-writing {
   border-top-color: #ff5364;
   animation: hj-pulse-text 1.6s ease-in-out infinite;
 }
@@ -300,19 +300,19 @@ html:has(.journal-page) body {
 }
 /* The planner writes your sent messages in pencil (Reenie Beanie) with no rule under them;
    while the entry is being written, the words themselves breathe. The input stays in the serif. */
-.hj-said .hj-ask__text {
+:where(.planner-page) .hj-said .hj-ask__text {
   font-family: var(--font-hand), cursive;
   letter-spacing: -0.01em;
   /* Reenie Beanie's line box is tall for its small x-height; pull the lines together. */
   line-height: 0.8;
 }
-.hj-said .hj-ask__text.is-writing {
+:where(.planner-page) .hj-said .hj-ask__text.is-writing {
   animation: hj-pulse-text 1.6s ease-in-out infinite;
 }
-.hj-ask__foot {
+:where(.planner-page) .hj-ask__foot {
   border-top-color: transparent !important;
 }
-.hj-ask__foot {
+:where(.planner-page) .hj-ask__foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -323,7 +323,7 @@ html:has(.journal-page) body {
   color: var(--ds-color-ink-tertiary);
 }
 /* The send arrow sits bare in the accent, with nothing behind it. */
-.hj-ask__send {
+:where(.planner-page) .hj-ask__send {
   display: grid;
   flex: none;
   place-items: center;
@@ -339,17 +339,17 @@ html:has(.journal-page) body {
     transform 150ms,
     opacity 150ms;
 }
-.hj-ask__send:hover:not(:disabled) {
+:where(.planner-page) .hj-ask__send:hover:not(:disabled) {
   transform: translateY(-2px);
 }
-.hj-ask__send:disabled {
+:where(.planner-page) .hj-ask__send:disabled {
   opacity: 0.3;
   cursor: default;
 }
 
 /* ---------- The floating pill and history, after the moodboard's Trips panel ---------- */
 
-.hj-pill {
+:where(.planner-page) .hj-pill {
   position: fixed;
   z-index: 20;
   top: 50%;
@@ -366,7 +366,7 @@ html:has(.journal-page) body {
     0 2px 4px rgb(0 0 0 / 0.04),
     0 10px 30px rgb(0 0 0 / 0.1);
 }
-.hj-pill button {
+:where(.planner-page) .hj-pill button {
   display: grid;
   place-items: center;
   width: 44px;
@@ -378,12 +378,12 @@ html:has(.journal-page) body {
   cursor: pointer;
   transition: background 150ms;
 }
-.hj-pill button:hover,
-.hj-pill button.is-on {
+:where(.planner-page) .hj-pill button:hover,
+:where(.planner-page) .hj-pill button.is-on {
   background: #f1f2f3;
 }
 
-.hj-history {
+:where(.planner-page) .hj-history {
   position: fixed;
   z-index: 19;
   top: 50%;
@@ -403,12 +403,12 @@ html:has(.journal-page) body {
     0 2px 4px rgb(0 0 0 / 0.04),
     0 10px 30px rgb(0 0 0 / 0.1);
 }
-.hj-history h2 {
+:where(.planner-page) .hj-history h2 {
   padding: 0 8px;
   font-size: var(--ds-type-heading-s-size);
   line-height: var(--ds-type-heading-s-line-height);
 }
-.hj-history ul {
+:where(.planner-page) .hj-history ul {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -416,12 +416,12 @@ html:has(.journal-page) body {
   overflow-y: auto;
   list-style: none;
 }
-.hj-history p {
+:where(.planner-page) .hj-history p {
   padding: 0 8px 4px;
   font-size: var(--ds-type-body-s-size);
   color: var(--ds-color-ink-tertiary);
 }
-.hj-history li button {
+:where(.planner-page) .hj-history li button {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -436,13 +436,13 @@ html:has(.journal-page) body {
   text-align: left;
   cursor: pointer;
 }
-.hj-history li button:hover:not(:disabled) {
+:where(.planner-page) .hj-history li button:hover:not(:disabled) {
   background: var(--ds-color-surface);
 }
-.hj-history li button.is-active {
+:where(.planner-page) .hj-history li button.is-active {
   background: #f1f2f3;
 }
-.hj-history__cover {
+:where(.planner-page) .hj-history__cover {
   flex: none;
   width: 48px;
   height: 48px;
@@ -450,12 +450,12 @@ html:has(.journal-page) body {
   border-radius: 10px;
   background: var(--ds-color-surface-sunken);
 }
-.hj-history__cover img {
+:where(.planner-page) .hj-history__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.hj-history__name {
+:where(.planner-page) .hj-history__name {
   overflow: hidden;
   font-size: var(--ds-type-body-size);
   line-height: 1.25;
@@ -466,15 +466,15 @@ html:has(.journal-page) body {
 /* ---------- Narrow screens ---------- */
 
 @media (max-width: 760px) {
-  .hj-ask {
+  :where(.planner-page) .hj-ask {
     padding: 88px 20px 32px;
   }
-  .hj-pill {
+  :where(.planner-page) .hj-pill {
     top: 16px;
     transform: none;
     flex-direction: row;
   }
-  .hj-history {
+  :where(.planner-page) .hj-history {
     top: 76px;
     left: 16px;
     transform: none;
@@ -484,7 +484,7 @@ html:has(.journal-page) body {
 /* ---------- Your message, written out while the reply loads ---------- */
 
 /* Each letter lands in turn, like a pen moving along the line. */
-.hj-said__letter {
+:where(.planner-page) .hj-said__letter {
   display: inline;
   white-space: pre-wrap;
   animation: hj-letter 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -497,11 +497,11 @@ html:has(.journal-page) body {
   }
 }
 /* The words stay still once written; the breeze below is the live sign. */
-.hj-said .hj-ask__text.is-writing {
+:where(.planner-page) .hj-said .hj-ask__text.is-writing {
   animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .hj-said__letter {
+  :where(.planner-page) .hj-said__letter {
     animation: none;
   }
 }

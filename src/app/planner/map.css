@@ -1,6 +1,6 @@
 /* Maps (map.tsx): MapLibre in our greys, coral numbered pins with a white rim, a dotted pencil
    route; Timeless for every word around them. */
-.pl-map {
+:where(.planner-page) .pl-map {
   position: relative;
   overflow: hidden;
   border-radius: 20px;
@@ -10,7 +10,7 @@
 }
 /* Loading: faint pencil streets drawing in, a pin dropping onto them, and a line saying what's
    happening; it fades away once the first tiles are drawn. */
-.pl-map__loading {
+:where(.planner-page) .pl-map__loading {
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -24,13 +24,13 @@
     #eef0f2;
   animation: pl-shimmer 2.2s linear infinite;
 }
-.pl-map__sketch {
+:where(.planner-page) .pl-map__sketch {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
-.pl-map__sketch path {
+:where(.planner-page) .pl-map__sketch path {
   fill: none;
   stroke: #cfd3d8;
   stroke-width: 1.4;
@@ -39,13 +39,13 @@
   stroke-dashoffset: 400;
   animation: pl-map-draw 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-.pl-map__sketch path:nth-child(2) {
+:where(.planner-page) .pl-map__sketch path:nth-child(2) {
   animation-delay: 0.3s;
 }
-.pl-map__sketch path:nth-child(3) {
+:where(.planner-page) .pl-map__sketch path:nth-child(3) {
   animation-delay: 0.6s;
 }
-.pl-map__sketch path:nth-child(4) {
+:where(.planner-page) .pl-map__sketch path:nth-child(4) {
   animation-delay: 0.9s;
 }
 @keyframes pl-map-draw {
@@ -53,7 +53,7 @@
     stroke-dashoffset: 0;
   }
 }
-.pl-map__drop {
+:where(.planner-page) .pl-map__drop {
   position: relative;
   display: grid;
   place-items: center;
@@ -65,7 +65,7 @@
   box-shadow: 0 6px 16px -6px rgb(0 0 0 / 0.25);
   animation: pl-map-drop 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
-.pl-map__drop svg {
+:where(.planner-page) .pl-map__drop svg {
   width: 20px;
   height: 20px;
 }
@@ -78,7 +78,7 @@
     translate: 0 0;
   }
 }
-.pl-map__status {
+:where(.planner-page) .pl-map__status {
   position: relative;
   padding: 4px 12px;
   border-radius: 999px;
@@ -87,37 +87,37 @@
   font-size: 14px;
   color: #5f6369;
 }
-.pl-map__canvas {
+:where(.planner-page) .pl-map__canvas {
   opacity: 0;
   transition: opacity 320ms ease;
 }
-.pl-map.is-ready .pl-map__canvas {
+:where(.planner-page) .pl-map.is-ready .pl-map__canvas {
   opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
-  .pl-map__loading,
-  .pl-map__drop,
-  .pl-map__sketch path {
+  :where(.planner-page) .pl-map__loading,
+  :where(.planner-page) .pl-map__drop,
+  :where(.planner-page) .pl-map__sketch path {
     animation: none;
     stroke-dashoffset: 0;
   }
 }
-.pl-map__canvas {
+:where(.planner-page) .pl-map__canvas {
   position: absolute;
   inset: 0;
 }
 
-.pl-map__canvas canvas {
+:where(.planner-page) .pl-map__canvas canvas {
   outline: none;
 }
 /* A pin and its name, side by side: the name in Timeless with a soft white halo. */
-.pl-map__marker {
+:where(.planner-page) .pl-map__marker {
   display: flex;
   align-items: center;
   gap: 6px;
   pointer-events: none;
 }
-.pl-map__label {
+:where(.planner-page) .pl-map__label {
   max-width: 14em;
   overflow: hidden;
   font-family: var(--ds-font-serif);
@@ -132,7 +132,7 @@
     0 0 3px #fff,
     0 0 6px #fff;
 }
-.pl-map__pin {
+:where(.planner-page) .pl-map__pin {
   display: grid;
   flex: none;
   place-items: center;
@@ -148,11 +148,11 @@
   line-height: 1;
   box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.3);
 }
-.pl-map__pin.is-plain {
+:where(.planner-page) .pl-map__pin.is-plain {
   width: 22px;
   height: 22px;
 }
-.pl-map__credit {
+:where(.planner-page) .pl-map__credit {
   position: absolute;
   right: 8px;
   bottom: 6px;
@@ -166,7 +166,7 @@
 }
 
 /* The location line: pin, neighbourhood, distance, walk or ride. */
-.pl-location {
+:where(.planner-page) .pl-location {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -177,32 +177,32 @@
   line-height: 1.3;
   color: #000;
 }
-.pl-location svg {
+:where(.planner-page) .pl-location svg {
   flex: none;
   width: 16px;
   height: 16px;
 }
-.pl-location__sep {
+:where(.planner-page) .pl-location__sep {
   color: #afb3b8;
 }
 
 /* The mini map in a sheet. */
-.pl-minimap {
+:where(.planner-page) .pl-minimap {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-.pl-minimap .pl-map {
+:where(.planner-page) .pl-minimap .pl-map {
   height: 200px;
 }
-.pl-minimap__foot {
+:where(.planner-page) .pl-minimap__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
-.pl-minimap__open {
+:where(.planner-page) .pl-minimap__open {
   padding: 9px 16px;
   border-radius: 999px;
   background: #000;
@@ -212,30 +212,30 @@
   text-decoration: none;
   white-space: nowrap;
 }
-.pl-minimap__open:hover {
+:where(.planner-page) .pl-minimap__open:hover {
   background: #26282b;
 }
 
 /* The Map spread: the stops on the left, read top to bottom, the map filling the rest. */
-.hj-map {
+:where(.planner-page) .hj-map {
   display: grid;
   grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
   gap: 3cqw;
   padding: 6cqh 3cqw 6cqh var(--pad-left);
   color: #000;
 }
-.hj-map__words {
+:where(.planner-page) .hj-map__words {
   display: flex;
   flex-direction: column;
   gap: 4cqh;
   min-width: 0;
 }
-.hj-map__head {
+:where(.planner-page) .hj-map__head {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.hj-map__head img {
+:where(.planner-page) .hj-map__head img {
   flex: none;
   width: max(48px, 8cqh);
   height: max(48px, 8cqh);
@@ -247,7 +247,7 @@
   line-height: 1.04;
   text-wrap: balance;
 }
-.hj-map__stops {
+:where(.planner-page) .hj-map__stops {
   display: flex;
   flex-direction: column;
   gap: 1.2cqh;
@@ -255,12 +255,12 @@
   padding: 0;
   list-style: none;
 }
-.hj-map__stops li {
+:where(.planner-page) .hj-map__stops li {
   display: flex;
   flex-direction: column;
   gap: 1.2cqh;
 }
-.hj-map__leg {
+:where(.planner-page) .hj-map__leg {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -268,16 +268,16 @@
   font-size: max(13px, min(1.5cqw, 2.3cqh));
   color: #5f6369;
 }
-.hj-map__leg svg {
+:where(.planner-page) .hj-map__leg svg {
   width: 15px;
   height: 15px;
 }
-.hj-map__stop {
+:where(.planner-page) .hj-map__stop {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.hj-map__num {
+:where(.planner-page) .hj-map__num {
   display: grid;
   flex: none;
   place-items: center;
@@ -288,22 +288,22 @@
   color: #fff;
   font-size: 14px;
 }
-.hj-map__name {
+:where(.planner-page) .hj-map__name {
   display: flex;
   flex-direction: column;
   font-size: max(16px, min(2cqw, 3cqh));
   line-height: 1.2;
 }
-.hj-map__area {
+:where(.planner-page) .hj-map__area {
   font-size: 0.78em;
   color: #5f6369;
 }
-.hj-map__map {
+:where(.planner-page) .hj-map__map {
   height: 100%;
   min-height: 0;
 }
 /* A stop the map couldn't find in this city: listed, no pin, an empty grey ring for its number. */
-.hj-map__stop.is-unplaced .hj-map__num {
+:where(.planner-page) .hj-map__stop.is-unplaced .hj-map__num {
   box-sizing: border-box;
   border: 1.5px solid #afb3b8;
   background: transparent;

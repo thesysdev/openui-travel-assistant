@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BackHome } from "../../components/back-home";
 import MoodboardCanvas from "./canvas";
 
 export const metadata: Metadata = {
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <MoodboardCanvas />;
+  return (
+    <>
+      <BackHome />
+      <MoodboardCanvas />
+    </>
+  );
 }

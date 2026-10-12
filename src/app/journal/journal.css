@@ -1,20 +1,20 @@
 /* The horizontal journal. One strip of full pages that snaps page by page; every page is
    either an entry page the agent wrote or the whole-page prompt at the end. */
 
-.journal-page :where(h1, h2, p, ul, figure) {
+.journal-page:where(:not(.planner-page)) :where(h1, h2, p, ul, figure) {
   margin: 0;
   padding: 0;
   font-weight: inherit;
 }
 
 /* No rubber-band bounce around the journal or its sheet: the page itself never scrolls. */
-html:has(.journal-page),
-html:has(.journal-page) body {
+html:has(.journal-page:where(:not(.planner-page))),
+html:has(.journal-page:where(:not(.planner-page))) body {
   overflow: hidden;
   overscroll-behavior: none;
 }
 
-.hj-strip {
+:where(.journal-page:not(.planner-page)) .hj-strip {
   display: flex;
   height: 100dvh;
   overflow-x: auto;
@@ -24,17 +24,17 @@ html:has(.journal-page) body {
   scrollbar-width: none;
   container-type: size;
 }
-.hj-strip::-webkit-scrollbar {
+:where(.journal-page:not(.planner-page)) .hj-strip::-webkit-scrollbar {
   display: none;
 }
 
 /* An entry's pages sit directly in the strip, through the Renderer's wrapper divs. */
-.hj-entry,
-.hj-entry div:not(.hj-page div) {
+:where(.journal-page:not(.planner-page)) .hj-entry,
+:where(.journal-page:not(.planner-page)) .hj-entry div:not(.hj-page div) {
   display: contents;
 }
 
-.hj-page {
+:where(.journal-page:not(.planner-page)) .hj-page {
   position: relative;
   box-sizing: border-box;
   flex: 0 0 100vw;
@@ -47,18 +47,18 @@ html:has(.journal-page) body {
 
 /* ---------- The whole-page prompt ---------- */
 
-.hj-ask {
+:where(.journal-page:not(.planner-page)) .hj-ask {
   display: flex;
   align-items: center;
   padding: 64px 12vw 64px max(112px, 12vw);
 }
-.hj-ask__form {
+:where(.journal-page:not(.planner-page)) .hj-ask__form {
   display: flex;
   flex-direction: column;
   gap: 32px;
   width: 100%;
 }
-.hj-ask__text {
+:where(.journal-page:not(.planner-page)) .hj-ask__text {
   box-sizing: border-box;
   min-height: 3.06em;
   width: 100%;
@@ -75,19 +75,19 @@ html:has(.journal-page) body {
   color: var(--ds-color-ink);
   caret-color: var(--ds-color-accent);
 }
-.hj-ask textarea::placeholder {
+:where(.journal-page:not(.planner-page)) .hj-ask textarea::placeholder {
   color: var(--ds-color-ink-disabled);
 }
 /* A sent message keeps the prompt's place and size, in full ink. The foot line breathes
    while the entry is being written. */
-.hj-said .hj-ask__text {
+:where(.journal-page:not(.planner-page)) .hj-said .hj-ask__text {
   overflow-wrap: anywhere;
 }
-.hj-said .hj-ask__foot {
+:where(.journal-page:not(.planner-page)) .hj-said .hj-ask__foot {
   min-height: 56px;
 }
 /* While the entry is being written, the rule under your message breathes in the accent. */
-.hj-said .hj-ask__foot.is-writing {
+:where(.journal-page:not(.planner-page)) .hj-said .hj-ask__foot.is-writing {
   border-top-color: #ff5364;
   animation: hj-pulse-text 1.6s ease-in-out infinite;
 }
@@ -96,7 +96,7 @@ html:has(.journal-page) body {
     opacity: 0.45;
   }
 }
-.hj-ask__foot {
+:where(.journal-page:not(.planner-page)) .hj-ask__foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -107,7 +107,7 @@ html:has(.journal-page) body {
   color: var(--ds-color-ink-tertiary);
 }
 /* The send arrow sits bare in the accent, with nothing behind it. */
-.hj-ask__send {
+:where(.journal-page:not(.planner-page)) .hj-ask__send {
   display: grid;
   flex: none;
   place-items: center;
@@ -123,17 +123,17 @@ html:has(.journal-page) body {
     transform 150ms,
     opacity 150ms;
 }
-.hj-ask__send:hover:not(:disabled) {
+:where(.journal-page:not(.planner-page)) .hj-ask__send:hover:not(:disabled) {
   transform: translateY(-2px);
 }
-.hj-ask__send:disabled {
+:where(.journal-page:not(.planner-page)) .hj-ask__send:disabled {
   opacity: 0.3;
   cursor: default;
 }
 
 /* ---------- The floating pill and history, after the moodboard's Trips panel ---------- */
 
-.hj-pill {
+:where(.journal-page:not(.planner-page)) .hj-pill {
   position: fixed;
   z-index: 20;
   top: 50%;
@@ -150,7 +150,7 @@ html:has(.journal-page) body {
     0 2px 4px rgb(0 0 0 / 0.04),
     0 10px 30px rgb(0 0 0 / 0.1);
 }
-.hj-pill button {
+:where(.journal-page:not(.planner-page)) .hj-pill button {
   display: grid;
   place-items: center;
   width: 44px;
@@ -162,12 +162,12 @@ html:has(.journal-page) body {
   cursor: pointer;
   transition: background 150ms;
 }
-.hj-pill button:hover,
-.hj-pill button.is-on {
+:where(.journal-page:not(.planner-page)) .hj-pill button:hover,
+:where(.journal-page:not(.planner-page)) .hj-pill button.is-on {
   background: var(--ds-color-canvas);
 }
 
-.hj-history {
+:where(.journal-page:not(.planner-page)) .hj-history {
   position: fixed;
   z-index: 19;
   top: 50%;
@@ -187,12 +187,12 @@ html:has(.journal-page) body {
     0 2px 4px rgb(0 0 0 / 0.04),
     0 10px 30px rgb(0 0 0 / 0.1);
 }
-.hj-history h2 {
+:where(.journal-page:not(.planner-page)) .hj-history h2 {
   padding: 0 8px;
   font-size: var(--ds-type-heading-s-size);
   line-height: var(--ds-type-heading-s-line-height);
 }
-.hj-history ul {
+:where(.journal-page:not(.planner-page)) .hj-history ul {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -200,12 +200,12 @@ html:has(.journal-page) body {
   overflow-y: auto;
   list-style: none;
 }
-.hj-history p {
+:where(.journal-page:not(.planner-page)) .hj-history p {
   padding: 0 8px 4px;
   font-size: var(--ds-type-body-s-size);
   color: var(--ds-color-ink-tertiary);
 }
-.hj-history li button {
+:where(.journal-page:not(.planner-page)) .hj-history li button {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -220,13 +220,13 @@ html:has(.journal-page) body {
   text-align: left;
   cursor: pointer;
 }
-.hj-history li button:hover:not(:disabled) {
+:where(.journal-page:not(.planner-page)) .hj-history li button:hover:not(:disabled) {
   background: var(--ds-color-surface);
 }
-.hj-history li button.is-active {
+:where(.journal-page:not(.planner-page)) .hj-history li button.is-active {
   background: var(--ds-color-canvas);
 }
-.hj-history__cover {
+:where(.journal-page:not(.planner-page)) .hj-history__cover {
   flex: none;
   width: 48px;
   height: 48px;
@@ -234,12 +234,12 @@ html:has(.journal-page) body {
   border-radius: 10px;
   background: var(--ds-color-surface-sunken);
 }
-.hj-history__cover img {
+:where(.journal-page:not(.planner-page)) .hj-history__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.hj-history__name {
+:where(.journal-page:not(.planner-page)) .hj-history__name {
   overflow: hidden;
   font-size: var(--ds-type-body-size);
   line-height: 1.25;
@@ -250,15 +250,17 @@ html:has(.journal-page) body {
 /* ---------- Narrow screens ---------- */
 
 @media (max-width: 760px) {
-  .hj-ask {
+  :where(.journal-page:not(.planner-page)) .hj-ask {
     padding: 88px 20px 32px;
   }
-  .hj-pill {
+  :where(.journal-page:not(.planner-page)) .hj-pill {
     top: 16px;
+    /* Beside the back arrow (components/back-home). */
+    left: 64px;
     transform: none;
     flex-direction: row;
   }
-  .hj-history {
+  :where(.journal-page:not(.planner-page)) .hj-history {
     top: 76px;
     left: 16px;
     transform: none;

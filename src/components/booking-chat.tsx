@@ -13,6 +13,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { darkTheme, lightTheme } from "../lib/theme";
 import { library } from "../library";
 import { localThreadStorage, saveMessages } from "../lib/thread-storage";
+import { BackHome } from "./back-home";
 
 // The route is stateless, so openAIMessageFormat sends the whole thread every turn; the runner's
 // stream comes back as NDJSON.
@@ -70,6 +71,7 @@ export default function BookingChat() {
   const theme = useMemo(() => ({ mode, lightTheme, darkTheme }), [mode]);
   return (
     <div className="booking-app">
+      <BackHome />
       <AgentInterface
         llm={llm}
         storage={localThreadStorage}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { dsFontVariables } from "../../design-system/fonts";
 import { tokensCss } from "../../design-system/tokens";
 import { handFont } from "./fonts";
+import { BackHome } from "../../components/back-home";
 import HorizontalJournal from "./journal";
 import styles from "./journal.module.css";
 
@@ -14,6 +15,7 @@ export default function Page() {
   return (
     <main className={`journal-page ${dsFontVariables} ${handFont.variable} ${styles.page}`}>
       <style dangerouslySetInnerHTML={{ __html: tokensCss(".journal-page") }} />
+      <BackHome />
       <HorizontalJournal />
     </main>
   );
