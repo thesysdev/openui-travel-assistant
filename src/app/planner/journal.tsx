@@ -14,7 +14,6 @@ import { iconFor } from "./place-icon";
 import { type PlannerMode, PlannerChatTabs } from "./chat/chat-tabs";
 import { DemoLinks } from "./demo-links";
 import { Breeze } from "./breeze";
-import { wholeSlides } from "./slides";
 import { LatestArrow } from "./latest-arrow";
 import { TripBridge } from "./itinerary-spread";
 import { Mascot } from "./mascot";
@@ -183,7 +182,7 @@ export default function HorizontalJournal() {
   // stops. Later spreads arrive off to the right without moving the view; scrolling yourself, or
   // the newest-page arrow, ends it at once. Pages are counted without the closing page and the
   // "writing the next page" placeholder, so the target is always the real first spread.
-  const entryPages = () => pages().filter((p) => !p.classList.contains("pl-home") && !p.classList.contains("hj-building"));
+  const entryPages = () => pages().filter((p) => !p.classList.contains("pl-home"));
   useEffect(() => {
     const follow = following.current;
     const el = strip.current;
@@ -197,30 +196,6 @@ export default function HorizontalJournal() {
   useEffect(() => {
     if (!pending) following.current.on = false;
   }, [pending]);
-
-  // Each new spread is held back until its photos have loaded (at most 2.5s), then shown whole
-  // with one soft rise.
-  useEffect(() => {
-    for (const spread of strip.current?.querySelectorAll<HTMLElement>(".hj-spread:not([data-seen])") ?? []) {
-      spread.dataset.seen = "1";
-      if (!pending) continue;
-      spread.classList.add("is-holding");
-      const started = performance.now();
-      const check = () => {
-        const frames = [...spread.querySelectorAll(".hj-img")];
-        // A spread without photos (Dates, a Question) has nothing to wait for.
-        const loaded = frames.every((f) => {
-          const img = f.querySelector("img");
-          return img && img.complete && img.naturalWidth > 0;
-        });
-        if (loaded || performance.now() - started > 2500) {
-          spread.classList.remove("is-holding");
-          spread.classList.add("is-arriving");
-        } else window.setTimeout(check, 120);
-      };
-      check();
-    }
-  });
 
   // Scrolling is free: a vertical wheel scrolls the strip sideways as far as it turns, so a
   // mouse reads the planner like a trackpad. The arrow keys still step panel by panel.
@@ -416,21 +391,15 @@ export default function HorizontalJournal() {
       <div className={`hj-strip${pending ? " is-writing" : ""}`} ref={stripRef} style={mode !== "explore" ? { display: "none" } : undefined}>
         {turns.map((turn, i) => {
           const reply = readReply(turn.code, turn === pending);
-          // While it streams, only whole spreads are shown, in order (see slides.ts).
-          const slides = wholeSlides(reply.program, turn === pending);
           return (
             <div className="hj-entry" key={`${activeId}:${i}`}>
               <Said text={turn.prompt} writing={turn === pending} />
               <HotelsContext.Provider value={reply.hotels}>
                 {/* Only the newest finished entry's steps can be tapped; older ones show what was chosen. */}
                 <Reply.Provider value={{ send: !pending && i === turns.length - 1 ? send : undefined, answer: turns[i + 1]?.prompt }}>
-                  <Renderer response={slides.program} library={journalLibrary} isStreaming={turn === pending} />
+                  <Renderer response={reply.program} library={journalLibrary} isStreaming={turn === pending} />
                 </Reply.Provider>
               </HotelsContext.Provider>
-              {/* The next spread being written: one quiet placeholder rather than half a slide. */}
-              {turn === pending && slides.whole > 0 && slides.whole < Math.max(slides.total, slides.whole + 1) ? (
-                <section className="hj-page hj-building" aria-label="Writing the next page" />
-              ) : null}
             </div>
           );
         })}

@@ -506,33 +506,3 @@ html:has(.journal-page) body {
   }
 }
 
-/* ---------- Slide by slide ---------- */
-
-/* A spread waits, unseen, until its photos are in; then the whole panel rises softly into view. */
-.hj-spread.is-holding {
-  opacity: 0;
-}
-.hj-spread.is-arriving {
-  animation: hj-slide-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-@keyframes hj-slide-in {
-  from {
-    opacity: 0;
-    translate: 0 18px;
-  }
-}
-/* The next spread being written: a quiet shimmering panel at the end of the strip. */
-.hj-building {
-  --span: 7;
-  --h: 0.72;
-  background:
-    linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.7) 50%, transparent 70%) 0 0 / 300% 100%,
-    #eef0f2;
-  animation: pl-shimmer 1.6s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hj-spread.is-arriving,
-  .hj-building {
-    animation: none;
-  }
-}

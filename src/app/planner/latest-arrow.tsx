@@ -29,7 +29,7 @@ function wordsUnder(button: HTMLElement) {
 
 /** The newest page and where the strip must scroll to show it whole against the right margin. */
 function newest(strip: HTMLElement) {
-  const pages = strip.querySelectorAll<HTMLElement>(".hj-page:not(.hj-building)");
+  const pages = strip.querySelectorAll<HTMLElement>(".hj-page");
   const page = pages[pages.length - 1];
   if (!page) return null;
   const pad = parseFloat(getComputedStyle(strip).paddingRight) || 0;

@@ -130,23 +130,7 @@
 .pl-chat-reply {
   position: relative;
 }
-.pl-chat-reply.is-holding .pl-chat-reply__body {
-  visibility: hidden;
-}
-.pl-chat-reply.is-holding > .pl-chat-thinking {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.pl-chat-reply.is-arriving .pl-chat-reply__body {
-  animation: pl-chat-rise 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-@keyframes pl-chat-rise {
-  from {
-    opacity: 0;
-    translate: 0 18px;
-  }
-}
+
 .pl-chat-reply__blocks {
   display: flex;
   flex-direction: column;
@@ -630,8 +614,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pl-chat-thinking path,
-  .pl-chat-thinking .hj-pen__text,
-  .pl-chat-reply.is-arriving .pl-chat-reply__body {
+  .pl-chat-thinking .hj-pen__text {
     animation: none;
   }
 }
