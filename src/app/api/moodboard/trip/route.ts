@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 export const runtime = "nodejs";
 
@@ -48,6 +49,8 @@ async function photoOf(place: string) {
 }
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const body = (await request.json()) as { said?: string[]; pieces?: string[] };
   const apiKey = process.env.THESYS_API_KEY;
   if (!apiKey)
@@ -60,6 +63,7 @@ export async function POST(request: Request) {
   const completion = await gateway.chat.completions
     .create({
       model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+      store: false,
       messages: [
         {
           role: "user",

@@ -241,7 +241,7 @@
   height: max(48px, 8cqh);
   object-fit: contain;
 }
-:is(.planner-page, .pl-scroll-sample, .pl-steps-sample) .hj-spread.hj-map h2 {
+.planner-page .hj-spread.hj-map h2 {
   margin: 0;
   font-size: min(4.6cqw, 7cqh);
   line-height: 1.04;

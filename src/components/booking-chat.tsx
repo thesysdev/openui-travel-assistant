@@ -5,15 +5,17 @@ import {
   fetchLLM,
   openAIMessageFormat,
   openAIReadableStreamAdapter,
-  useOpenuiCloudStorage,
   useSystemThemeMode,
 } from "@openuidev/react-ui";
+import { useThread, useThreadList } from "@openuidev/react-headless";
 import { Briefcase, CalendarDays, Users, Wallet } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { darkTheme, lightTheme } from "../lib/theme";
 import { library } from "../library";
+import { localThreadStorage, saveMessages } from "../lib/thread-storage";
 
-// Send the thread's messages in Chat Completions format and read the runner's stream from the route.
+// The route is stateless, so openAIMessageFormat sends the whole thread every turn; the runner's
+// stream comes back as NDJSON.
 const llm = fetchLLM({
   url: "/api/chat",
   streamAdapter: openAIReadableStreamAdapter(),
@@ -45,21 +47,32 @@ const starters = [
   },
 ];
 
+// Keeps each thread's messages in this browser's local storage: right away when a run ends, and
+// at most once a second while one streams. Rendered inside Agent Interface, so it sees the thread.
+function PersistThread() {
+  const threadId = useThreadList((s) => s.selectedThreadId);
+  const messages = useThread((s) => s.messages);
+  const isRunning = useThread((s) => s.isRunning);
+  const isLoading = useThread((s) => s.isLoadingMessages);
+  const lastSave = useRef(0);
+  useEffect(() => {
+    if (!threadId || isLoading || !messages.length) return;
+    const now = Date.now();
+    if (isRunning && now - lastSave.current < 1000) return;
+    lastSave.current = now;
+    saveMessages(threadId, messages);
+  }, [threadId, messages, isRunning, isLoading]);
+  return null;
+}
+
 export default function BookingChat() {
   const mode = useSystemThemeMode();
   const theme = useMemo(() => ({ mode, lightTheme, darkTheme }), [mode]);
-  // Store threads as Gateway conversations, which the browser reaches with a short-lived token
-  // from /api/frontend-token. The chat route appends each turn to the thread's conversation, so
-  // a thread opened again loads its messages.
-  const storage = useOpenuiCloudStorage({
-    token: "/api/frontend-token",
-    features: { artifact: false },
-  });
   return (
     <div className="booking-app">
       <AgentInterface
         llm={llm}
-        storage={storage}
+        storage={localThreadStorage}
         componentLibrary={library}
         agentName="Stay finder"
         logoUrl="/logo.svg"
@@ -82,6 +95,7 @@ export default function BookingChat() {
           description="Describe your trip in your own words. I'll turn it into a form with what I understood, ask only for what's missing, and find stays with live prices."
         />
         <AgentInterface.Composer placeholder="Describe your trip…" />
+        <PersistThread />
       </AgentInterface>
     </div>
   );

@@ -613,7 +613,7 @@ export default function MoodboardStudio({
   });
 
   // Fit the board, leaving room on the left for the panel.
-  // /design/moodboard?trip=... plans that trip once the canvas is ready, then drops the parameter
+  // /moodboard?trip=... plans that trip once the canvas is ready, then drops the parameter
   // through the router, so a reload or a remount doesn't plan it again. The short wait lets dev
   // mode's double mount settle, so the board goes to the editor that stays.
   const router = useRouter();
@@ -624,7 +624,7 @@ export default function MoodboardStudio({
     const timer = setTimeout(() => {
       if (editor.isDisposed || linkedTrip === trip) return;
       linkedTrip = trip;
-      router.replace("/design/moodboard");
+      router.replace("/moodboard");
       setPrompt(trip);
       void generate(trip);
     }, 400);

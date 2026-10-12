@@ -1,6 +1,7 @@
 import { generateSystemPrompt } from "@openuidev/lang-core";
 import { chatSpec } from "../../../planner/chat/chat-schema";
 import { staysRules, streamAgent, today } from "../agent";
+import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 export const runtime = "nodejs";
 
@@ -95,6 +96,8 @@ function tripLine(trip: { place?: string; dates?: string; explored?: string[]; i
 }
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const { prompt, history, traveller, trip } = (await request.json()) as {
     prompt?: string;
     history?: Turn[];

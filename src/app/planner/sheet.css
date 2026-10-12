@@ -94,12 +94,6 @@
   }
 }
 
-/* In /components the sheet sits on the stage instead of floating over the journal. */
-.hj-sheet-panel--inline {
-  max-height: none;
-  overflow: visible;
-  animation: none;
-}
 .hj-sheet-panel > div {
   display: contents;
 }
@@ -419,26 +413,3 @@
   white-space: normal;
 }
 
-/* The stacked sheet in /components: the same layers on a fixed-height stage, with room above for
-   the sheets that step back. */
-.pl-sheet-stack {
-  display: grid;
-  height: 780px;
-  padding: 48px 0 0;
-  box-sizing: border-box;
-  border-radius: 24px;
-  background: rgb(0 0 0 / 0.45);
-  overflow: hidden;
-}
-.pl-sheet-stack .hj-sheet-layer {
-  align-self: stretch;
-  max-height: 100%;
-  min-height: 0;
-  padding: 0 24px;
-  box-sizing: border-box;
-}
-.pl-sheet-stack .hj-sheet-panel {
-  height: 100%;
-  max-height: 100%;
-  border-radius: 24px 24px 0 0;
-}

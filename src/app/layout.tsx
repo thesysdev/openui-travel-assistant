@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import "./styles.css";
 
 export const metadata: Metadata = {
-  title: "Booking assistant | OpenUI cookbook",
-  description: "Turn a request for a stay into a prefilled form, live hotel prices, and a booking.",
+  title: { default: "OpenUI Trip Planner", template: "%s · OpenUI Trip Planner" },
+  description:
+    "AI trip planner that designs your trip as you chat: moodboard, day-by-day itinerary, map and live hotel prices. Built with OpenUI generative UI.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

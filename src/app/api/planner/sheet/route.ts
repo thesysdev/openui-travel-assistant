@@ -1,6 +1,7 @@
 import { generateSystemPrompt } from "@openuidev/lang-core";
 import { sheetSpec } from "../../../planner/sheet-schema";
 import { staysRules, streamAgent, today } from "../agent";
+import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 export const runtime = "nodejs";
 
@@ -34,6 +35,8 @@ function sheetPrompt() {
 }
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const { subject, name, context } = (await request.json()) as { subject?: string; name?: string; context?: string };
   if (!subject?.trim()) return Response.json({ error: "Pick a photo." }, { status: 400 });
   const label = name && name !== subject ? `"${name}" (Wikipedia: ${subject})` : `"${subject}"`;

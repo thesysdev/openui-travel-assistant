@@ -12,6 +12,7 @@ import { ChatView, type ChatTurnData } from "./chat/chat";
 import { placeOf } from "./chat/chat-library";
 import { iconFor } from "./place-icon";
 import { type PlannerMode, PlannerChatTabs } from "./chat/chat-tabs";
+import { DemoLinks } from "./demo-links";
 import { Breeze } from "./breeze";
 import { wholeSlides } from "./slides";
 import { LatestArrow } from "./latest-arrow";
@@ -391,6 +392,7 @@ export default function HorizontalJournal() {
       {/* The mascot is always in its corner; the tabs appear once a trip has started. */}
       <Mascot className="pl-mascot--corner" />
       <PlannerChatTabs mode={mode} onChange={setMode} />
+      <DemoLinks />
       <TripBridge.Provider
         value={{ programs: turns.map((t) => readReply(t.code).program), prompts: said, dates: tripDates, place: tripPlace, openBoard: () => setMode("itinerary") }}
       >

@@ -740,15 +740,6 @@
   align-items: center;
   gap: 40px 48px;
 }
-.hj-sheet--type p {
-  margin: 0;
-  font-size: clamp(48px, 6vw, 96px);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-.hj-sheet--type .drawably-host {
-  font-family: inherit;
-}
 
 /* ---------- Panel tuning (planner) ----------
    In the planner a spread is a 9-column panel, closer to square than a full screen, so type
@@ -756,74 +747,74 @@
    layout read as prints: rounded corners, and the inline photos in a sentence stand upright.
    Scoped to the planner and its /components sample so the journal's spreads keep their size. */
 
-:is(.planner-page, .pl-scroll-sample) .hj-spread {
+.planner-page .hj-spread {
   --gap: 10px;
   --photo-radius: 12px;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-spread h2 {
+.planner-page .hj-spread h2 {
   font-size: calc(min(6cqw, 9.5cqh) * var(--fit, 1));
   line-height: 0.98;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-pen {
+.planner-page .hj-pen {
   font-size: 5.4cqmin;
 }
 
 /* Prints: photos laid into a spread get rounded corners; full-bleed ones stay edge to edge. */
-:is(.planner-page, .pl-scroll-sample) :is(.hj-trio, .hj-route, .hj-quote, .hj-versus, .hj-checklist, .hj-stays, .hj-price) .hj-img,
-:is(.planner-page, .pl-scroll-sample) .hj-split .hj-img {
+.planner-page :is(.hj-trio, .hj-route, .hj-quote, .hj-versus, .hj-checklist, .hj-stays, .hj-price) .hj-img,
+.planner-page .hj-split .hj-img {
   border-radius: var(--photo-radius);
 }
 
 /* Bleed */
-:is(.planner-page, .pl-scroll-sample) .hj-bleed h2 {
+.planner-page .hj-bleed h2 {
   font-size: calc(min(14cqw, 22cqh) * var(--fit, 1));
   bottom: 4cqh;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-bleed__pen {
+.planner-page .hj-bleed__pen {
   font-size: 6cqmin;
 }
 
 /* Split: the colour block and the photo sit inset in the panel as two rounded prints. */
-:is(.planner-page, .pl-scroll-sample) .hj-split,
-:is(.planner-page, .pl-scroll-sample) .hj-split.is-flipped {
+.planner-page .hj-split,
+.planner-page .hj-split.is-flipped {
   padding: 3cqh;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-split__block,
-:is(.planner-page, .pl-scroll-sample) .hj-split.is-flipped .hj-split__block {
+.planner-page .hj-split__block,
+.planner-page .hj-split.is-flipped .hj-split__block {
   padding: 5cqh 4cqw;
   border-radius: var(--photo-radius);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-split p {
+.planner-page .hj-split p {
   font-size: calc(max(15px, 2.4cqmin) * var(--fit, 1));
   line-height: 1.3;
 }
 
 /* Trio */
-:is(.planner-page, .pl-scroll-sample) .hj-trio {
+.planner-page .hj-trio {
   gap: 3cqh;
   padding: 6cqh 5cqw 6cqh var(--pad-left);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-trio figcaption {
+.planner-page .hj-trio figcaption {
   padding-top: 1.4cqh;
   font-size: calc(3.4cqmin * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-trio__price {
+.planner-page .hj-trio__price {
   font-size: 2.2cqmin;
 }
 
 /* Sentence: inline photos are small upright prints instead of pills. */
-:is(.planner-page, .pl-scroll-sample) .hj-sentence {
+.planner-page .hj-sentence {
   gap: 4cqh;
   padding: 6cqh 6cqw 6cqh var(--pad-left);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-sentence h2 {
+.planner-page .hj-sentence h2 {
   max-width: none;
   font-size: calc(min(8.4cqw, 10.5cqh) * var(--fit, 1));
   line-height: 1.18;
   text-wrap: pretty;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-inline,
-:is(.planner-page, .pl-scroll-sample) .hj-inline.is-wide {
+.planner-page .hj-inline,
+.planner-page .hj-inline.is-wide {
   width: 0.9em;
   height: 1.2em;
   margin: 0 0.14em;
@@ -832,25 +823,25 @@
   rotate: -2deg;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 6px 14px -6px rgb(0 0 0 / 0.25);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-inline.is-wide {
+.planner-page .hj-inline.is-wide {
   rotate: 2deg;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-sentence__pen {
+.planner-page .hj-sentence__pen {
   margin-right: 6cqw;
   font-size: 7cqmin;
 }
 
 /* Route */
-:is(.planner-page, .pl-scroll-sample) .hj-route {
+.planner-page .hj-route {
   gap: 4cqh;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route h2 {
+.planner-page .hj-route h2 {
   font-size: calc(min(5.6cqw, 9cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route__row {
+.planner-page .hj-route__row {
   justify-content: center;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route figure {
+.planner-page .hj-route figure {
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
@@ -859,84 +850,84 @@
 }
 /* Portrait prints that share the row: each as wide as its share allows, never taller than
    about half the panel, so the arrows between them always keep their own room. */
-:is(.planner-page, .pl-scroll-sample) .hj-route figure > .hj-img,
-:is(.planner-page, .pl-scroll-sample) .hj-route figure.is-tall > .hj-img {
+.planner-page .hj-route figure > .hj-img,
+.planner-page .hj-route figure.is-tall > .hj-img {
   width: min(100%, 36cqh);
   height: auto;
   aspect-ratio: 3 / 4.2;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route figcaption {
+.planner-page .hj-route figcaption {
   align-self: stretch;
   padding-left: calc((100% - min(100%, 36cqh)) / 2);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route__leg {
+.planner-page .hj-route__leg {
   width: max(64px, 8cqw);
   padding: 0 1cqw;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route figcaption {
+.planner-page .hj-route figcaption {
   margin-top: 1.4cqh;
   font-size: calc(3.4cqmin * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route__leg {
+.planner-page .hj-route__leg {
   font-size: 3cqmin;
 }
 
 /* Quote */
-:is(.planner-page, .pl-scroll-sample) .hj-quote {
+.planner-page .hj-quote {
   gap: 4cqw;
   padding: 6cqh 4cqw 6cqh var(--pad-left);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-quote p {
+.planner-page .hj-quote p {
   font-size: calc(min(4.6cqw, 7.4cqh) * var(--fit, 1));
   line-height: 1.06;
 }
 
 /* Versus */
-:is(.planner-page, .pl-scroll-sample) .hj-versus h2 {
+.planner-page .hj-versus h2 {
   font-size: calc(min(8cqw, 13cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-versus__label {
+.planner-page .hj-versus__label {
   font-size: calc(6.4cqmin * var(--fit, 1));
 }
 
 /* Price */
-:is(.planner-page, .pl-scroll-sample) .hj-price__words {
+.planner-page .hj-price__words {
   padding: 9cqh 4cqw 7cqh var(--pad-left);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-price__amount {
+.planner-page .hj-price__amount {
   font-size: calc(min(9cqw, 15cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-price p {
+.planner-page .hj-price p {
   margin-top: 5cqh;
   font-size: calc(min(3.6cqw, 5.6cqh) * var(--fit, 1));
   line-height: 1.1;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-price > .hj-img {
+.planner-page .hj-price > .hj-img {
   margin: 3cqh;
 }
 
 /* Checklist */
-:is(.planner-page, .pl-scroll-sample) .hj-checklist__text {
+.planner-page .hj-checklist__text {
   font-size: calc(min(2.8cqw, 4.4cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li .hj-pen__text {
+.planner-page .hj-checklist li .hj-pen__text {
   font-size: 4.4cqmin;
 }
 /* No rules between items: each is a small portrait print, white-bordered with a soft shadow
    and a slight alternating tilt, beside its line. */
-:is(.planner-page, .pl-scroll-sample) .hj-checklist ul {
+.planner-page .hj-checklist ul {
   display: flex;
   flex-direction: column;
   gap: 2.4cqh;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li {
+.planner-page .hj-checklist li {
   /* Photos shrink with the number of rows so five rows fit the panel as well as three. */
   grid-template-columns: min(12cqw, 15cqh, calc((80cqh - (var(--n, 4) - 1) * 2.4cqh) / var(--n, 4) / 1.35)) 1fr auto;
   gap: 3cqw;
   padding: 0;
   border-top: 0;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li > .hj-img {
+.planner-page .hj-checklist li > .hj-img {
   aspect-ratio: 3 / 4;
   border: max(3px, 0.5cqmin) solid #fff;
   border-radius: 6px;
@@ -945,37 +936,37 @@
     0 8px 18px -8px rgb(0 0 0 / 0.3);
   rotate: -2deg;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li:nth-child(even) > .hj-img {
+.planner-page .hj-checklist li:nth-child(even) > .hj-img {
   rotate: 2deg;
 }
 
 /* Mosaic */
-:is(.planner-page, .pl-scroll-sample) .hj-mosaic h2 {
+.planner-page .hj-mosaic h2 {
   font-size: calc(min(5.2cqw, 8cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-mosaic__note {
+.planner-page .hj-mosaic__note {
   font-size: 5.4cqmin;
 }
 
 /* Stays */
-:is(.planner-page, .pl-scroll-sample) .hj-stays__row {
+.planner-page .hj-stays__row {
   gap: 2.4cqw;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-hotel__name {
+.planner-page .hj-hotel__name {
   font-size: min(2.2cqw, 3.6cqh);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-hotel__line {
+.planner-page .hj-hotel__line {
   font-size: min(1.9cqw, 3cqh);
 }
 /* The meta line (rating, where) reads under the name in grey, not faded ink. */
-:is(.planner-page, .pl-scroll-sample) .hj-hotel__where {
+.planner-page .hj-hotel__where {
   font-size: min(1.5cqw, 2.4cqh);
   opacity: 1;
   color: #5f6369;
 }
 
 /* Small photos read as prints: a white border and a soft shadow (route stops, inline photos). */
-:is(.planner-page, .pl-scroll-sample) .hj-route figure > .hj-img {
+.planner-page .hj-route figure > .hj-img {
   box-sizing: border-box;
   padding: 1.6cqmin 1.6cqmin 6cqmin;
   background: #fff;
@@ -984,18 +975,18 @@
     0 1px 2px rgb(0 0 0 / 0.08),
     0 12px 24px -10px rgb(0 0 0 / 0.3);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-inline,
-:is(.planner-page, .pl-scroll-sample) .hj-inline.is-wide {
+.planner-page .hj-inline,
+.planner-page .hj-inline.is-wide {
   border: 0.05em solid #fff;
 }
 
 /* Prints keep a white margin round the photo with a deeper one along the bottom, like an
    instant photo; the photo itself gets a hairline radius. */
-:is(.planner-page, .pl-scroll-sample) .hj-route figure > .hj-img img,
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li > .hj-img img {
+.planner-page .hj-route figure > .hj-img img,
+.planner-page .hj-checklist li > .hj-img img {
   border-radius: 3px;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li > .hj-img {
+.planner-page .hj-checklist li > .hj-img {
   box-sizing: border-box;
   padding: 0.8cqmin 0.8cqmin 3cqmin;
   border: 0;
@@ -1006,11 +997,11 @@
 /* A photo lifted on hover never covers the words laid over the spread: the versus label stays on
    top, and the versus pair zooms inside its frames instead of lifting. The mosaic title lives
    inside its photo, so it lifts with it. */
-:is(.planner-page, .pl-scroll-sample) .hj-versus h2 {
+.planner-page .hj-versus h2 {
   z-index: 3;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-versus__pair > .hj-card:is(:hover, :focus-visible),
-:is(.planner-page, .pl-scroll-sample) .hj-versus__pair > * .hj-card:is(:hover, :focus-visible) {
+.planner-page .hj-versus__pair > .hj-card:is(:hover, :focus-visible),
+.planner-page .hj-versus__pair > * .hj-card:is(:hover, :focus-visible) {
   transform: none;
   box-shadow: none;
 }
@@ -1020,49 +1011,49 @@
    fit() in library.tsx), pen notes wrap instead of running on in one line, and words that share
    a page sit in the same flow so one pushes the other rather than landing on it. */
 
-:is(.planner-page, .pl-scroll-sample) .hj-pen {
+.planner-page .hj-pen {
   max-width: 100%;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-pen__text {
+.planner-page .hj-pen__text {
   min-width: 0;
   white-space: normal;
   text-wrap: balance;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist li .hj-pen__text {
+.planner-page .hj-checklist li .hj-pen__text {
   max-width: 16cqw;
   white-space: normal;
 }
-:is(.planner-page, .pl-scroll-sample) :is(.hj-trio, .hj-stays) header .hj-pen {
+.planner-page :is(.hj-trio, .hj-stays) header .hj-pen {
   flex: 0 1 auto;
   max-width: 45%;
 }
 
 /* Bleed: the note and the title share one column down the photo, note at the top right and the
    title along the bottom, so a long title pushes up toward the note instead of over it. */
-:is(.planner-page, .pl-scroll-sample) .hj-bleed {
+.planner-page .hj-bleed {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 3cqh;
   padding: 8cqh 7cqw 4cqh var(--pad-left);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-bleed h2,
-:is(.planner-page, .pl-scroll-sample) .hj-bleed__pen {
+.planner-page .hj-bleed h2,
+.planner-page .hj-bleed__pen {
   position: relative;
   inset: auto;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-bleed h2 {
+.planner-page .hj-bleed h2 {
   max-width: 100%;
   margin-top: auto;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-bleed__pen {
+.planner-page .hj-bleed__pen {
   order: -1;
   align-self: flex-end;
   max-width: 60%;
 }
 
 /* Versus: a longer title wraps, centred over the seam, and each label wraps inside its photo. */
-:is(.planner-page, .pl-scroll-sample) .hj-versus h2 {
+.planner-page .hj-versus h2 {
   width: max-content;
   max-width: 70%;
   box-sizing: border-box;
@@ -1070,44 +1061,44 @@
   white-space: normal;
   text-wrap: balance;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-versus__label {
+.planner-page .hj-versus__label {
   right: 3cqw;
   white-space: normal;
 }
 
 /* A hand mark under a word sits below the baseline; titles that carry one get a little more
    leading so an underline on one line never runs through the next. */
-:is(.planner-page, .pl-scroll-sample) .hj-spread h2:has(.drawably-host) {
+.planner-page .hj-spread h2:has(.drawably-host) {
   line-height: 1.14;
 }
 
 /* ---------- Words on photos (planner) ----------
    Handwriting and type laid on a photo stay white and carry a deep, soft shadow so they read on
    any picture, bright sky or pale stone. The Bleed title sits closer to the edge. */
-:is(.planner-page, .pl-scroll-sample) :is(.hj-mosaic__note, .hj-versus__label, .hj-bleed__pen) {
+.planner-page :is(.hj-mosaic__note, .hj-versus__label, .hj-bleed__pen) {
   text-shadow:
     0 1px 2px rgb(0 0 0 / 0.6),
     0 2px 8px rgb(0 0 0 / 0.5),
     0 4px 28px rgb(0 0 0 / 0.55);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-bleed h2 {
+.planner-page .hj-bleed h2 {
   text-shadow:
     0 1px 3px rgb(0 0 0 / 0.35),
     0 6px 40px rgb(0 0 0 / 0.45);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-bleed {
+.planner-page .hj-bleed {
   padding-left: 3.5cqw;
 }
 
 /* The pencil reads larger: notes on photos and the legs between route stops. */
-:is(.planner-page, .pl-scroll-sample) .hj-pen,
-:is(.planner-page, .pl-scroll-sample) .hj-mosaic__note {
+.planner-page .hj-pen,
+.planner-page .hj-mosaic__note {
   font-size: 6.4cqmin;
 }
-:is(.planner-page, .pl-scroll-sample) :is(.hj-bleed__pen, .hj-sentence__pen) {
+.planner-page :is(.hj-bleed__pen, .hj-sentence__pen) {
   font-size: 7.4cqmin;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route__leg {
+.planner-page .hj-route__leg {
   width: max(80px, 11cqw);
   font-size: 4.6cqmin;
 }
@@ -1115,38 +1106,38 @@
 /* ---------- Easier reading (planner) ----------
    Body text a third larger than before, keeping lines around 55 to 65 characters; titles stay
    clearly bigger. --fit (above) still shrinks a spread whose words would overflow. */
-:is(.planner-page, .pl-scroll-sample) .hj-split p {
+.planner-page .hj-split p {
   max-width: 30em;
   font-size: calc(max(16px, 3.1cqmin) * var(--fit, 1));
   line-height: 1.38;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-price p {
+.planner-page .hj-price p {
   font-size: calc(min(4.5cqw, 7cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-checklist__text {
+.planner-page .hj-checklist__text {
   font-size: calc(min(3.5cqw, 5.4cqh) * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-trio figcaption,
-:is(.planner-page, .pl-scroll-sample) .hj-route figcaption {
+.planner-page .hj-trio figcaption,
+.planner-page .hj-route figcaption {
   font-size: calc(4.1cqmin * var(--fit, 1));
 }
-:is(.planner-page, .pl-scroll-sample) .hj-hotel__name {
+.planner-page .hj-hotel__name {
   font-size: min(2.7cqw, 4.4cqh);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-hotel__line {
+.planner-page .hj-hotel__line {
   font-size: min(2.3cqw, 3.7cqh);
 }
 
 /* ---------- Rows you can open (planner) ----------
    A print beside its words is one target: a soft grey well fades in behind the whole row and
    the print zooms inside its frame. Nothing moves, so nothing shifts. */
-:is(.planner-page, .pl-scroll-sample) .hj-row {
+.planner-page .hj-row {
   position: relative;
   isolation: isolate;
   cursor: pointer;
   outline: none;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-row::before {
+.planner-page .hj-row::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -1158,20 +1149,20 @@
   pointer-events: none;
   transition: opacity 220ms ease;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-route.is-dark .hj-row::before {
+.planner-page .hj-route.is-dark .hj-row::before {
   background: rgb(255 255 255 / 0.1);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-row:is(:hover, :focus-visible)::before {
+.planner-page .hj-row:is(:hover, :focus-visible)::before {
   opacity: 1;
 }
-:is(.planner-page, .pl-scroll-sample) .hj-row .hj-img img {
+.planner-page .hj-row .hj-img img {
   transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-:is(.planner-page, .pl-scroll-sample) .hj-row:is(:hover, :focus-visible) .hj-img img {
+.planner-page .hj-row:is(:hover, :focus-visible) .hj-img img {
   transform: scale(1.06);
 }
 @media (prefers-reduced-motion: reduce) {
-  :is(.planner-page, .pl-scroll-sample) .hj-row .hj-img img {
+  .planner-page .hj-row .hj-img img {
     transition: none;
   }
 }

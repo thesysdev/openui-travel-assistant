@@ -9,7 +9,7 @@
   padding: 7cqh 5cqw 7cqh var(--pad-left);
   color: #000;
 }
-:is(.planner-page, .pl-scroll-sample, .pl-steps-sample) .hj-spread.hj-itin h2 {
+.planner-page .hj-spread.hj-itin h2 {
   margin: 0;
   font-size: min(6cqw, 8.5cqh);
   line-height: 1.02;
@@ -28,7 +28,7 @@
   gap: 2cqh;
   min-width: 0;
 }
-:is(.planner-page, .pl-scroll-sample, .pl-steps-sample) .hj-itin__day h3 {
+.planner-page .hj-itin__day h3 {
   margin: 0;
   font-size: max(16px, min(2.3cqw, 3.4cqh));
   font-weight: 400;

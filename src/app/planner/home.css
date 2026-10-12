@@ -251,29 +251,6 @@
   cursor: default;
 }
 
-/* ---------- In /components ---------- */
-
-.pl-stage {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  font-family: var(--ds-font-serif);
-  font-weight: 380;
-  font-variation-settings: var(--ds-font-variation);
-}
-/* The home page shown at a fixed page size, as on a laptop screen. */
-.pl-stage--page {
-  min-height: 720px;
-  border-radius: 12px;
-  background: #f8f9fa;
-}
-.pl-stage--page .pl-home {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 720px;
-  padding: 48px 64px;
-}
-
 /* ---------- Send: a white arrow on a red disc, on the home and the follow-up pages ---------- */
 
 .pl-home__send,

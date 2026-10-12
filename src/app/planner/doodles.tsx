@@ -58,7 +58,6 @@ const stickers: Record<string, { color: string; fill?: string; lines?: string; w
     fill: "M50 6 L 58 30 L 80 16 L 72 40 L 96 44 L 74 56 L 90 76 L 64 70 L 60 94 L 48 74 L 30 92 L 30 68 L 6 70 L 24 52 L 8 34 L 32 34 L 26 10 L 44 28 Z",
   },
 };
-export const stickerNames = Object.keys(stickers);
 
 /** A die-cut sticker: white border, then the colour, then any face lines, with a soft shadow. */
 function StickerArt({ name, size, className, tilt }: { name: string; size: number; className?: string; tilt: number }) {

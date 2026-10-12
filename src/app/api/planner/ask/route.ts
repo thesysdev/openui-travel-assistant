@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 // The Explore agent, asked from the Itinerary board: a short answer plus the places it suggests,
 // as JSON, so the board can show them as cards to drag onto a day. Requests that reshape the plan
@@ -18,6 +19,8 @@ Rules:
 - Don't suggest what's already on the board.`;
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const { prompt, place, dates, saved, context, traveller } = (await request.json()) as {
     prompt?: string;
     place?: string;
@@ -46,6 +49,7 @@ export async function POST(request: Request) {
     const completion = await gateway.chat.completions.create(
       {
         model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+        store: false,
         messages: [
           { role: "system", content: system },
           { role: "user", content: brief },

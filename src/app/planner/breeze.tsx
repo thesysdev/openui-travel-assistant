@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { landscapes } from "../components/icons";
+import { landscapes } from "../../components/icons";
 import "./breeze.css";
 
 // Light line landscapes (the /components set: beach, island, lake, forest, and the rest) and a
@@ -109,29 +109,6 @@ export function Breeze({ prompt = "" }: { prompt?: string }) {
           </svg>
         );
       })}
-    </div>
-  );
-}
-
-/** Every sketch, still, for /components. */
-export function BreezeSheet() {
-  return (
-    <div className="pl-breeze-sheet">
-      {["plane", ...landscapes.map((l) => l.name)].map((name) => (
-        <figure key={name}>
-          <svg viewBox={name === "plane" ? "0 0 120 110" : "0 0 100 100"} className="pl-breeze__still">
-            {name === "plane" ? (
-              <>
-                <path className="pl-breeze__line" d={sketches.plane} />
-                <Trail name="plane" still />
-              </>
-            ) : (
-              <LandscapeArt name={name} still />
-            )}
-          </svg>
-          <figcaption>{name.toLowerCase()}</figcaption>
-        </figure>
-      ))}
     </div>
   );
 }

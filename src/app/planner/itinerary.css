@@ -88,8 +88,8 @@
 
 /* Photos that touch a panel's edge zoom inside their frame on hover instead of lifting, so the
    heart in their corner is never pushed past the edge and clipped. */
-:is(.planner-page, .pl-scroll-sample) .hj-spread :is(.hj-mosaic__grid, .hj-versus__pair) > .hj-card:is(:hover, :focus-visible),
-:is(.planner-page, .pl-scroll-sample) .hj-spread .hj-mosaic__grid > * .hj-card:is(:hover, :focus-visible) {
+.planner-page .hj-spread :is(.hj-mosaic__grid, .hj-versus__pair) > .hj-card:is(:hover, :focus-visible),
+.planner-page .hj-spread .hj-mosaic__grid > * .hj-card:is(:hover, :focus-visible) {
   transform: none;
   box-shadow: none;
 }

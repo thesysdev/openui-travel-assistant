@@ -11,7 +11,7 @@
   padding: 7cqh 6cqw 7cqh var(--pad-left);
 }
 /* Scoped one deeper than the planner's panel tuning of spread headlines. */
-:is(.planner-page, .pl-scroll-sample, .pl-steps-sample) .hj-spread:is(.hj-question, .hj-picks, .hj-dates) h2 {
+.planner-page .hj-spread:is(.hj-question, .hj-picks, .hj-dates) h2 {
   max-width: 14em;
   font-size: min(7cqw, 9.5cqh);
   line-height: 1.02;
