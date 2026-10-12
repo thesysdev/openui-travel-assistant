@@ -1,5 +1,6 @@
 "use client";
 
+import { partialJSONParse } from "@openuidev/react-headless";
 import {
   createContext,
   type DragEvent,
@@ -16,7 +17,7 @@ import { arrange, type Item, type LayoutConfig } from "../../moodboard/arrange";
 import { PromptForm } from "./home";
 import { iconFor } from "./place-icon";
 import { type ItineraryItem, type Saveable, useItinerary } from "./itinerary";
-import { type AskAnswer, AskPanel, dragType } from "./ask-panel";
+import { type AskAnswer, AskPanel, dragType, readAsk } from "./ask-panel";
 import { daysOf } from "./itinerary-spread";
 import { Chip } from "./steps";
 import { Doodle, Stickers } from "./doodles";
@@ -622,10 +623,21 @@ export default function ItineraryBoard({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt, place, dates, context, saved: items.map((i) => i.name), traveller: travellerLine(readTraveller()) }),
         });
-        const text = await response.text();
-        let body: Omit<AskAnswer, "question"> = {};
+        if (!response.ok || !response.body) throw new Error();
+        // The answer streams in as JSON text: show what has arrived (partial JSON) as it grows,
+        // then check the whole reply once it ends.
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let text = "";
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          text += decoder.decode(value, { stream: true });
+          setAnswer({ question: prompt, ...readAsk(partialJSONParse(text.slice(text.indexOf("{"))), true) });
+        }
+        let body: Omit<AskAnswer, "question">;
         try {
-          body = JSON.parse(text);
+          body = readAsk(JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)), false);
         } catch {
           body = { error: "That didn't come through. Ask again?" };
         }

@@ -7,7 +7,6 @@ import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 export const runtime = "nodejs";
 
-type Answer = { answer: string; places: { name: string; subject: string; note?: string; kind?: "place" | "food" | "stay" }[] };
 
 const system = `You are a warm, well-travelled friend helping someone plan a trip. They are looking at their itinerary board and ask a question.
 Reply with JSON only, no prose around it and no code fences:
@@ -42,11 +41,11 @@ export async function POST(request: Request) {
   ]
     .filter(Boolean)
     .join("\n");
-  // The model reasons before it answers, and a tight token cap can leave the answer empty (that
-  // was the "Unexpected end of JSON input"), so give it room and try once more if it comes back
-  // empty or cut short.
-  const once = async () => {
-    const completion = await gateway.chat.completions.create(
+  // The answer streams to the browser as JSON text, which the panel reads as it grows (partial
+  // JSON), so the answer writes in and place cards appear as each one is complete. The model
+  // reasons before it answers, so give it room; if a reply comes back empty, ask once more.
+  const open = () =>
+    gateway.chat.completions.create(
       {
         model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
         store: false,
@@ -55,17 +54,39 @@ export async function POST(request: Request) {
           { role: "user", content: brief },
         ],
         max_completion_tokens: 8000,
+        stream: true,
       },
       { signal: request.signal },
     );
-    const text = completion.choices[0]?.message?.content ?? "";
-    return JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)) as Answer;
-  };
+  // Open the first attempt before responding, so a rejected key or rate limit returns as an HTTP
+  // error instead of failing mid-stream.
+  let first: Awaited<ReturnType<typeof open>>;
   try {
-    const reply = await once().catch(() => once());
-    const places = (Array.isArray(reply.places) ? reply.places : []).filter((p) => p?.name && p.subject).slice(0, 6);
-    return Response.json({ answer: String(reply.answer ?? ""), places });
+    first = await open();
   } catch {
     return Response.json({ error: "The answer didn't come back. Ask again?" }, { status: 502 });
   }
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      try {
+        for (let attempt = 0, completion = first; attempt < 2; attempt++) {
+          let wrote = false;
+          for await (const chunk of completion) {
+            const text = chunk.choices[0]?.delta?.content;
+            if (!text) continue;
+            wrote = true;
+            controller.enqueue(encoder.encode(text));
+          }
+          if (wrote || attempt === 1) break;
+          completion = await open();
+        }
+      } catch {
+        // A dropped connection ends the stream; the panel says the answer didn't come through.
+      } finally {
+        controller.close();
+      }
+    },
+  });
+  return new Response(stream, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache, no-transform" } });
 }
