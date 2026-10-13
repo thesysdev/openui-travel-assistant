@@ -4,7 +4,7 @@
 
 export const FRONTEND_TOKEN_HEADER = "x-thesys-frontend-token";
 
-const APP_ID = process.env.APP_ID || "openui-travel-planner";
+const APP_ID = process.env.APP_ID || "openui-trip-planner";
 // Reuse a token until a minute before it expires; keep at most this many visitors' tokens.
 const REFRESH_MARGIN_S = 60;
 const MAX_CACHED = 1000;

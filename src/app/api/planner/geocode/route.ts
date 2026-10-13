@@ -36,7 +36,7 @@ async function lookup(query: string, around?: Box): Promise<Point | null> {
   // Around the trip's city, only results inside a box about 60 km across count.
   const box = around ? `&viewbox=${around.lon - 0.6},${around.lat + 0.6},${around.lon + 0.6},${around.lat - 0.6}&bounded=1` : "";
   const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&addressdetails=1${box}&q=${encodeURIComponent(query)}`;
-  const response = await fetch(url, { headers: { "User-Agent": "openui-trip-planner/1.0 (+https://github.com/thesysdev/openui-travel-planner)", "Accept-Language": "en" } });
+  const response = await fetch(url, { headers: { "User-Agent": "openui-trip-planner/1.0 (+https://github.com/thesysdev/openui-trip-planner)", "Accept-Language": "en" } });
   if (!response.ok) return null;
   const [hit] = (await response.json()) as { lat: string; lon: string; address?: Record<string, string> }[];
   if (!hit) return null;
