@@ -6,6 +6,7 @@ import { DrawablyCircle, DrawablyHighlight, DrawablyUnderline } from "./drawably
 import { type arrowDirs, type arrowStyles, buildLibrary, type colors } from "./schema";
 import "./drawably/style.css";
 import "./spreads.css";
+import { withBase } from "../../lib/base-path";
 
 // The journal's spreads, rebuilt from /design/pairings for full pages. Their schemas live in
 // schema.ts. Every size is in container units of the page, so a spread scales to any box.
@@ -39,7 +40,7 @@ export function usePhoto(subject: string | undefined) {
     if (!subject || streaming) return;
     if (found.has(subject)) return setPhoto(found.get(subject));
     const controller = new AbortController();
-    fetch(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`, { signal: controller.signal })
+    fetch(withBase(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`), { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : null))
       .then((result: Found) => {
         found.set(subject, result);

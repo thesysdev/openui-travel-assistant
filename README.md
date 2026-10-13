@@ -14,7 +14,7 @@ echo "THESYS_API_KEY=sk-th-..." > .env.local
 npm run dev
 ```
 
-Open http://127.0.0.1:3000.
+Open http://127.0.0.1:3000, which redirects to the demo's path, `/demo/travel-planner-agent`.
 
 | Variable              | Default          | Purpose                                                               |
 | --------------------- | ---------------- | --------------------------------------------------------------------- |
@@ -26,7 +26,7 @@ Open http://127.0.0.1:3000.
 
 ## What's in it
 
-| URL | Experience |
+| URL (under `/demo/travel-planner-agent`) | Experience |
 | --- | --- |
 | `/` → `/planner` | **Planner**, the home page. **Explore** ideas as visual spreads, **Chat** about the trip, and turn saved places into an **Itinerary**: a day-by-day board on a map, with weather and prices in your currency. |
 | `/moodboard` | **Moodboard**: an agent composes the trip's look and feel on a canvas, piece by piece as it streams. |
@@ -45,7 +45,7 @@ Other data comes from keyless public services: [OpenFreeMap](https://openfreemap
 
 ## Storage and privacy
 
-Booking threads are stored in OpenUI Gateway as conversations. There's no sign-in, so each browser tab session makes up an anonymous visitor id (`openui_travel_<uuid>`, the same format as the OpenUI docs chat) and sends it in the `x-openui-cloud-user-id` header. `/api/frontend-token` mints a short-lived frontend token scoped to that id, which the thread list uses, and the chat route reads a thread's earlier turns with that token, so Gateway refuses a thread that belongs to someone else. Each turn, including its tool calls and results, is then appended with the API key. Closing the tab drops the id, so its threads can no longer be opened; Gateway keeps them until they are deleted.
+Booking threads are stored in OpenUI Gateway as conversations. There's no sign-in, so each browser tab session makes up an anonymous visitor id (`openui_travel_<uuid>`, the same format as the OpenUI docs chat) and sends it in the `x-openui-cloud-user-id` header. It's kept under its own sessionStorage key, since on openui.com the demo shares an origin with the docs chat. `/api/frontend-token` mints a short-lived frontend token scoped to that id, which the thread list uses, and the chat route reads a thread's earlier turns with that token, so Gateway refuses a thread that belongs to someone else. Each turn, including its tool calls and results, is then appended with the API key. Closing the tab drops the id, so its threads can no longer be opened; Gateway keeps them until they are deleted.
 
 Everything else (trips, chats, itineraries, moodboards and journals) lives in each visitor's browser (localStorage). Those routes are stateless: the planner and journal send the trip's earlier turns with each request, and their completions are sent with `store: false`.
 
@@ -53,7 +53,9 @@ The app has no sign-in. Every POST route accepts requests only from the app's ow
 
 ## Deploying
 
-Set `THESYS_API_KEY` in the host's server environment, ideally a key used only by this demo so its usage can be watched and revoked on its own.
+The demo is served at [openui.com/demo/travel-planner-agent](https://www.openui.com/demo/travel-planner-agent): the OpenUI docs app rewrites that path to this deployment. So the app sets `basePath` to the same path (`src/lib/base-path.ts`), and paths written by hand, such as fetch calls, files in `public/` and the planner's history URLs, go through `withBase()`.
+
+Set `THESYS_API_KEY` in the host's server environment, ideally a key used only by this demo so its usage can be watched and revoked on its own. Set `ALLOWED_ORIGINS=https://www.openui.com,https://openui.com` so requests through the proxy pass the origin check.
 
 Before deploying publicly:
 

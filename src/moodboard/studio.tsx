@@ -53,6 +53,7 @@ import type { Chip } from "./agent/follow-ups";
 import { ChipRow, fetchFollowUps, savedChips, useStarters } from "./follow-up-chips";
 import "./moodboard.css";
 import "./agent/agent.css";
+import { withBase } from "../lib/base-path";
 
 const shapeUtils = [PieceShapeUtil, QuestionShapeUtil];
 
@@ -451,7 +452,7 @@ export default function MoodboardStudio({
     setChips([]);
     savedChips.save(trip, []);
     try {
-      const response = await fetch("/api/moodboard/agent", {
+      const response = await fetch(withBase("/api/moodboard/agent"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -9,6 +9,7 @@ import { Price, saveTraveller } from "./money";
 import { type HotelData, SheetOpener } from "./library";
 import "./home.css";
 import { fillLine, useWeatherLine } from "./weather-line";
+import { withBase } from "../../lib/base-path";
 
 // The planner's first page: today's weather where you are, the question and an input to answer
 // it, with quick suggestions (places with their 3D icons) along the bottom.
@@ -119,7 +120,7 @@ function useWeather(skip: boolean) {
     if (skip) return;
     let gone = false;
     const load = (query = "") =>
-      fetch(`/api/planner/weather${query}`)
+      fetch(withBase(`/api/planner/weather${query}`))
         .then((r) => (r.ok ? r.json() : Promise.reject()))
         .then((w: Weather) => {
           // Where the traveller is goes to the agents and sets the currency prices are shown in.
@@ -164,7 +165,7 @@ export function WeatherLine({ weather: given }: { weather?: Weather }) {
   }
   const { words, sky } = condition(weather.code);
   // eslint-disable-next-line @next/next/no-img-element
-  const icon = <img className="pl-weather__icon" src={`/icons-3d/weather-${sky}.webp`} alt="" />;
+  const icon = <img className="pl-weather__icon" src={withBase(`/icons-3d/weather-${sky}.webp`)} alt="" />;
   const place = (
     <>
       <span className="pl-weather__flag" aria-hidden>
@@ -201,7 +202,7 @@ function Illustration({ icon, onMissing }: { icon: string; onMissing?: () => voi
     // eslint-disable-next-line @next/next/no-img-element
     <img
       ref={img}
-      src={`/icons-3d/${icon}-pixar.webp`}
+      src={withBase(`/icons-3d/${icon}-pixar.webp`)}
       alt=""
       onLoad={(e) => e.currentTarget.classList.add("is-loaded")}
       onError={() => onMissing?.()}

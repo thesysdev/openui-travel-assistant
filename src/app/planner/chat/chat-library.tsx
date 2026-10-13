@@ -14,6 +14,7 @@ import { ChatDates, windowsOf } from "./chat-dates";
 import { type ChatDish, type ChatItem, ChatChecklist, ChatDishes, type ChatPick, ChatPicks, ChatPrice, ChatQuestion, ChatRoute, type ChatSide, ChatVersus, type RouteStop } from "./chat-pieces";
 import { buildChatLibrary } from "./chat-schema";
 import "./chat.css";
+import { withBase } from "../../../lib/base-path";
 
 // The Chat tab's pieces: chat-sized variants of the journal's, composed from the same parts
 // (usePhoto and the heart, Price in two currencies, the maps, the follow-up cards, the board's
@@ -329,7 +330,7 @@ export function ChatItineraryCard({
         </span>
         <span className="hj-itin__top">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="hj-itin__icon" src={`/icons-3d/${iconFor(place)}-pixar.webp`} alt="" draggable={false} />
+          <img className="hj-itin__icon" src={withBase(`/icons-3d/${iconFor(place)}-pixar.webp`)} alt="" draggable={false} />
           <span className="hj-itin__label">
             <span className="hj-itin__place">{place || "Your trip"}</span>
             <span className="hj-itin__action">{working ? "Arranging your days…" : "Open itinerary"}</span>
@@ -394,7 +395,7 @@ function Replan({ props }: { props: { request?: string; title?: string } }) {
     // existing plan works on the board as it is.
     const planned = itinerary.items.some((i) => i.day);
     const seed = planned ? [] : [...placesIn(bridge?.programs ?? []), ...chatPlaces(programs ?? [])];
-    fetch(`/api/planner/itinerary/agent?trip=${encodeURIComponent(itinerary.trip)}`, {
+    fetch(withBase(`/api/planner/itinerary/agent?trip=${encodeURIComponent(itinerary.trip)}`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

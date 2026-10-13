@@ -14,6 +14,7 @@ import { darkTheme, lightTheme } from "../lib/theme";
 import { library } from "../library";
 import { getOrCreateUserId, USER_ID_HEADER } from "../lib/user-id";
 import { BackHome } from "./back-home";
+import { withBase } from "../lib/base-path";
 
 const starters = [
   {
@@ -50,7 +51,7 @@ export default function BookingChat() {
   const [userId] = useState(getOrCreateUserId);
   const [llm] = useState(() =>
     fetchLLM({
-      url: "/api/chat",
+      url: withBase("/api/chat"),
       streamAdapter: openAIReadableStreamAdapter(),
       messageFormat: openAIMessageFormat,
       headers: { [USER_ID_HEADER]: userId },
@@ -58,7 +59,7 @@ export default function BookingChat() {
   );
   const tokenFetch = useMemo<typeof fetch>(
     () => (input, init) => {
-      if (input !== "/api/frontend-token") return fetch(input, init);
+      if (input !== withBase("/api/frontend-token")) return fetch(input, init);
       const headers = new Headers(init?.headers);
       headers.set(USER_ID_HEADER, userId);
       return fetch(input, { ...init, headers });
@@ -66,7 +67,7 @@ export default function BookingChat() {
     [userId],
   );
   const storage = useOpenuiCloudStorage({
-    token: "/api/frontend-token",
+    token: withBase("/api/frontend-token"),
     features: { artifact: false },
     fetch: tokenFetch,
   });
@@ -78,7 +79,7 @@ export default function BookingChat() {
         storage={storage}
         componentLibrary={library}
         agentName="Stay finder"
-        logoUrl="/logo.svg"
+        logoUrl={withBase("/logo.svg")}
         theme={theme}
         starters={starters}
         starterVariant="long"
@@ -93,7 +94,7 @@ export default function BookingChat() {
           </span>
         </AgentInterface.ThreadHeader>
         <AgentInterface.Welcome
-          image={{ url: "/logo.svg" }}
+          image={{ url: withBase("/logo.svg") }}
           title="Where are you headed?"
           description="Describe your trip in your own words. I'll turn it into a form with what I understood, ask only for what's missing, and find stays with live prices."
         />

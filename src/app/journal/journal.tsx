@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { HotelsContext, journalLibrary, type Opened, readReply, SheetOpener } from "./library";
 import { DetailSheet } from "./sheet";
 import "./journal.css";
+import { withBase } from "../../lib/base-path";
 
 // A journal you read sideways, left to right: your message on its own page, the entry's
 // spreads (photos, big type, pen notes) to its right, then a whole-page prompt for the next
@@ -114,7 +115,7 @@ export default function HorizontalJournal() {
     let code = "";
     setPending({ prompt, code });
     try {
-      const response = await fetch("/api/horizontal-journal", {
+      const response = await fetch(withBase("/api/horizontal-journal"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, history }),
@@ -233,7 +234,7 @@ function HistoryCover({ journal }: { journal: Journal }) {
   const [src, setSrc] = useState<string>();
   useEffect(() => {
     if (!subject) return;
-    fetch(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`)
+    fetch(withBase(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`))
       .then((r) => (r.ok ? r.json() : null))
       .then((photo: { url: string } | null) => setSrc(photo?.url))
       .catch(() => {});

@@ -6,6 +6,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { each, type HotelData, HotelsContext, Pen, readReply, useHotels, usePhoto } from "./library";
 import { buildSheetLibrary } from "./sheet-schema";
 import "./sheet.css";
+import { withBase } from "../../lib/base-path";
 
 // The detail sheet: a photo's click opens it in the middle of the screen, and OpenUI writes it
 // from /api/horizontal-journal/sheet, laid out like an Airbnb listing. Sheets are kept per
@@ -155,7 +156,7 @@ export function DetailSheet({ open, context, onClose }: { open: Opened; context:
     (async () => {
       let text = "";
       try {
-        const response = await fetch("/api/horizontal-journal/sheet", {
+        const response = await fetch(withBase("/api/horizontal-journal/sheet"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...open, context }),

@@ -2,6 +2,7 @@
 
 import { Fragment, type ReactNode, useEffect, useState } from "react";
 import "./weather-line.css";
+import { withBase } from "../../lib/base-path";
 
 // The planner's weather, retold by the concierge. /api/planner/weather-line writes a line with
 // {temp}, {sky} and {place} slots; the page fills them with the same temperature, 3D icon and
@@ -20,7 +21,7 @@ function fetchLine(reading: Reading): Promise<string | null> {
   } catch {}
   let pending = cache.get(key);
   if (!pending) {
-    pending = fetch("/api/planner/weather-line", {
+    pending = fetch(withBase("/api/planner/weather-line"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: key,

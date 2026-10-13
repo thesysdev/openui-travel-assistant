@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import "./money.css";
+import { withBase } from "../../lib/base-path";
 
 // Where the traveller is, and prices in their own money. The home page's weather finds the
 // traveller (city, country, local weather); that's kept here, sent to the agents with each
@@ -83,7 +84,7 @@ function ratesFor(base: string) {
   if (!rates.has(base))
     rates.set(
       base,
-      fetch(`/api/planner/fx?base=${base}`)
+      fetch(withBase(`/api/planner/fx?base=${base}`))
         .then((r) => r.json())
         .then((b: { rates?: Record<string, number> }) => b.rates ?? {})
         .catch(() => ({})),

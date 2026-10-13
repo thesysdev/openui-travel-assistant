@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { type DragEvent, useEffect, useState } from "react";
 import { type Saveable, SaveHeart } from "./itinerary";
 import "./ask-panel.css";
+import { withBase } from "../../lib/base-path";
 
 // The Explore agent's answer on the Itinerary board: a frosted panel on the right with a short
 // answer and the places it suggests as small prints. Drag a print onto a day (or Favourites) to
@@ -32,7 +33,7 @@ function photoOf(subject: string) {
   if (!photos.has(subject))
     photos.set(
       subject,
-      fetch(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`)
+      fetch(withBase(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`))
         .then((r) => (r.ok ? r.json() : null))
         .then((body: { url?: string } | null) => body?.url)
         .catch(() => undefined),

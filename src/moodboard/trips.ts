@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { withBase } from "../lib/base-path";
 
 // Trips: each one is its own tldraw board (kept in IndexedDB under its persistence key) plus its
 // own planner conversation (in localStorage). This file keeps the list of trips and which one is
@@ -137,7 +138,7 @@ export function locate(id: string, said: string[], pieces: string[]) {
   const key = `${id}:${pieces.length}`;
   if (!trip || trip.place || !pieces.length || asked.has(key)) return;
   asked.add(key);
-  fetch("/api/moodboard/trip", {
+  fetch(withBase("/api/moodboard/trip"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ said, pieces }),
