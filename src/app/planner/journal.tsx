@@ -21,6 +21,7 @@ import { readTraveller, travellerLine } from "./money";
 import { DetailSheet } from "./sheet";
 import { bookingOf, followUps, Reply } from "./steps";
 import "./journal.css";
+import { BASE_PATH, withBase } from "../../lib/base-path";
 
 // A journal you read sideways, left to right: your message on its own page, the entry's
 // spreads (photos, big type, pen notes) to its right, then a whole-page prompt for the next
@@ -43,7 +44,7 @@ const hasAny = (j: Journal) => j.turns.length > 0 || !!j.chat?.length;
 const modes: PlannerMode[] = ["explore", "chat", "itinerary"];
 /** The tab and trip the address names: /planner/<tab>?trip=<id>. */
 const fromUrl = () => {
-  const tab = location.pathname.match(/^\/planner\/(\w+)/)?.[1] as PlannerMode | undefined;
+  const tab = location.pathname.slice(BASE_PATH.length).match(/^\/planner\/(\w+)/)?.[1] as PlannerMode | undefined;
   return { mode: tab && modes.includes(tab) ? tab : ("explore" as PlannerMode), trip: new URLSearchParams(location.search).get("trip") ?? undefined };
 };
 
@@ -119,14 +120,14 @@ export default function HorizontalJournal() {
   }, []);
 
   // The address follows the tab and the trip, so either can be shared, reloaded or gone back to:
-  // /planner/chat?trip=…, and plain /planner for a new, empty trip on Explore. Switching tab or
+  // /planner/chat?trip=… (under the base path; history calls don't add it), and plain /planner for a new, empty trip on Explore. Switching tab or
   // trip adds a history entry; a trip getting its first entry only updates the address.
   const shown = useRef({ mode: "", id: "" });
   const popping = useRef(false);
   const activeHasAny = journals.some((j) => j.id === activeId && hasAny(j));
   useEffect(() => {
     if (!activeId) return;
-    const url = mode === "explore" && !activeHasAny ? "/planner" : `/planner/${mode}${activeHasAny ? `?trip=${activeId}` : ""}`;
+    const url = withBase(mode === "explore" && !activeHasAny ? "/planner" : `/planner/${mode}${activeHasAny ? `?trip=${activeId}` : ""}`);
     const moved = shown.current.mode !== mode || shown.current.id !== activeId;
     const first = !shown.current.id;
     shown.current = { mode, id: activeId };
@@ -302,7 +303,7 @@ export default function HorizontalJournal() {
     let code = "";
     setPending({ prompt, code });
     try {
-      const response = await fetch("/api/planner", {
+      const response = await fetch(withBase("/api/planner"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, history, traveller: travellerLine(readTraveller()) }),
@@ -430,7 +431,7 @@ export default function HorizontalJournal() {
         {tripPlace ? (
           <span className="pl-pill-place" title={tripPlace} aria-label={`Trip: ${tripPlace}`} role="img">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/icons-3d/${iconFor(tripPlace)}-pixar.webp`} alt="" draggable={false} />
+            <img src={withBase(`/icons-3d/${iconFor(tripPlace)}-pixar.webp`)} alt="" draggable={false} />
           </span>
         ) : null}
         <button type="button" onClick={newJournal} title={mode === "chat" ? "New chat" : "New journal"} aria-label={mode === "chat" ? "New chat" : "New journal"}>
@@ -495,7 +496,7 @@ function HistoryCover({ journal }: { journal: Journal }) {
   const [src, setSrc] = useState<string>();
   useEffect(() => {
     if (!subject) return;
-    fetch(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`)
+    fetch(withBase(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`))
       .then((r) => (r.ok ? r.json() : null))
       .then((photo: { url: string } | null) => setSrc(photo?.url))
       .catch(() => {});
@@ -504,7 +505,7 @@ function HistoryCover({ journal }: { journal: Journal }) {
   return (
     <span className={`hj-history__cover${subject ? "" : " pl-history__icon"}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {src ? <img src={src} alt="" /> : subject ? null : <img src={`/icons-3d/${iconFor(journal.title)}-pixar.webp`} alt="" />}
+      {src ? <img src={src} alt="" /> : subject ? null : <img src={withBase(`/icons-3d/${iconFor(journal.title)}-pixar.webp`)} alt="" />}
     </span>
   );
 }

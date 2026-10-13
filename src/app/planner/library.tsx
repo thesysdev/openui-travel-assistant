@@ -11,6 +11,7 @@ import "../journal/drawably/style.css";
 import "./spreads.css";
 import { Itinerary } from "./itinerary-spread";
 import { MapStep } from "./map";
+import { withBase } from "../../lib/base-path";
 
 // The journal's spreads, rebuilt from /design/pairings for full pages. Their schemas live in
 // schema.ts. Every size is in container units of the page, so a spread scales to any box.
@@ -42,7 +43,7 @@ const lookUp = (subject: string) => {
   if (!asked.has(subject))
     asked.set(
       subject,
-      fetch(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`)
+      fetch(withBase(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`))
         .then((r) => (r.ok ? r.json() : null))
         .then((result: Found) => {
           found.set(subject, result);

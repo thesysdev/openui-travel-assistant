@@ -9,6 +9,7 @@ import { HotelsContext, readReply } from "../library";
 import { readTraveller, travellerLine } from "../money";
 import { chatLibrary, ChatTurn } from "./chat-library";
 import "./chat.css";
+import { withBase } from "../../../lib/base-path";
 
 // The Chat tab: the trip as a conversation with a travel agent, in one centred column on the
 // white page. Your messages are written in pencil, letter by letter, like the journal's; while
@@ -78,7 +79,7 @@ export function ChatView({ turns, onTurn }: { turns: ChatTurnData[]; onTurn: (tu
     let code = "";
     setPending({ prompt, code });
     try {
-      const response = await fetch("/api/planner/chat", {
+      const response = await fetch(withBase("/api/planner/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

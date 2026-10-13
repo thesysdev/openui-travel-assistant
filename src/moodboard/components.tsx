@@ -3,6 +3,7 @@
 import { defineComponent, useIsStreaming } from "@openuidev/react-lang";
 import { useEffect, useState } from "react";
 import { z } from "zod/v4";
+import { withBase } from "../lib/base-path";
 
 // Moodboard building blocks the model can place inside a piece, next to the standard OpenUI
 // components. Each one renders a design artifact that the stock library has no direct match for.
@@ -172,7 +173,7 @@ export const Photo = defineComponent({
       if (!props.subject || streaming) return;
       if (found.has(key)) return setPhoto(found.get(key));
       const controller = new AbortController();
-      fetch(`/api/moodboard/images?kind=${kind}&q=${encodeURIComponent(props.subject)}`, {
+      fetch(withBase(`/api/moodboard/images?kind=${kind}&q=${encodeURIComponent(props.subject)}`), {
         signal: controller.signal,
       })
         .then((response) => (response.ok ? response.json() : null))

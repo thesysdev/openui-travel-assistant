@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Minus, Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useEditor, useValue } from "tldraw";
 import type { Option, Question } from "./questions";
+import { withBase } from "../../lib/base-path";
 
 // The answer controls for each kind of question, styled after Airbnb's search panels: a
 // two-month range calendar, a "Where" search with place photos, guest steppers, photo-tile
@@ -301,7 +302,7 @@ function usePhoto(subject?: string) {
   useEffect(() => {
     if (!subject) return;
     const controller = new AbortController();
-    fetch(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`, {
+    fetch(withBase(`/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`), {
       signal: controller.signal,
     })
       .then((response) => (response.ok ? response.json() : null))
@@ -341,7 +342,7 @@ function Where({
     if (query.trim().length < 2) return setPlaces([]);
     const controller = new AbortController();
     const timer = setTimeout(() => {
-      fetch(`/api/moodboard/places?q=${encodeURIComponent(query.trim())}`, {
+      fetch(withBase(`/api/moodboard/places?q=${encodeURIComponent(query.trim())}`), {
         signal: controller.signal,
       })
         .then((response) => (response.ok ? response.json() : { places: [] }))

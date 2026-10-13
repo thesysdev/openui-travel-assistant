@@ -11,6 +11,7 @@ import { Breeze } from "./breeze";
 import { SheetMiniMap } from "./map";
 import { Price } from "./money";
 import "./sheet.css";
+import { withBase } from "../../lib/base-path";
 
 // The detail sheet: a photo's click opens it in the middle of the screen, and OpenUI writes it
 // from /api/planner/sheet, laid out like an Airbnb listing. Sheets are kept per
@@ -247,7 +248,7 @@ function SheetPanel({ open, context, onClose, onOpen }: { open: Opened; context:
     (async () => {
       let text = "";
       try {
-        const response = await fetch("/api/planner/sheet", {
+        const response = await fetch(withBase("/api/planner/sheet"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...open, context }),

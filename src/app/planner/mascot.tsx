@@ -2,6 +2,7 @@
 
 import { type MouseEvent, useRef, useState } from "react";
 import "./mascot.css";
+import { withBase } from "../../lib/base-path";
 
 // The planner's mascot: a face under a coral bucket hat (public/mascot.svg, as drawn). It sits in
 // the top-left corner, in the column of the floating + / history pill and on the row of the
@@ -81,7 +82,7 @@ export function Mascot({ size = 56, className }: { size?: number; className?: st
     >
       {/* The drawing fills the middle of its 2048 box; the frame crops to it. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/mascot.svg" alt="" draggable={false} />
+      <img src={withBase("/mascot.svg")} alt="" draggable={false} />
     </span>
   );
 }

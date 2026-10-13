@@ -25,6 +25,7 @@ import { SheetOpener } from "./library";
 import { Price, readTraveller, travellerLine } from "./money";
 import { type Bounds, Camera } from "./board-camera";
 import "./board.css";
+import { withBase } from "../../lib/base-path";
 
 // The Itinerary tab: a canvas of our own (pan and zoom from board-camera.ts) where the saved
 // places become a plan. Items are grouped by their day, each day a masonry of print cards under a
@@ -55,7 +56,7 @@ function Heading({ text, icon, title, x, y, w, h }: { text: string; icon?: strin
       <h2 className="pl-day__title">
         {icon ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="pl-day__icon" src={`/icons-3d/${icon}-pixar.webp`} alt="" draggable={false} />
+          <img className="pl-day__icon" src={withBase(`/icons-3d/${icon}-pixar.webp`)} alt="" draggable={false} />
         ) : null}
         {day}
       </h2>
@@ -79,7 +80,7 @@ function PlanTile() {
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/icons-3d/followup-schedule-pixar.webp" alt="" draggable={false} />
+      <img src={withBase("/icons-3d/followup-schedule-pixar.webp")} alt="" draggable={false} />
       <span className="pl-plan-tile__title">Make a plan</span>
       <span className="pl-plan-tile__line">Sort your favourites into days</span>
     </button>
@@ -584,7 +585,7 @@ export default function ItineraryBoard({
       setPending(scope ?? itinerary.items.map((i) => i.id));
       setMessage("Rearranging your plan…");
       try {
-        const response = await fetch(`/api/planner/itinerary/agent?trip=${encodeURIComponent(itinerary.trip)}`, {
+        const response = await fetch(withBase(`/api/planner/itinerary/agent?trip=${encodeURIComponent(itinerary.trip)}`), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt, dates, context, days: daysOf(context.split(" / "), dates), items: itinerary.items, traveller: travellerLine(readTraveller()) }),
@@ -618,7 +619,7 @@ export default function ItineraryBoard({
       setAnswer({ question: prompt });
       setAsking(true);
       try {
-        const response = await fetch("/api/planner/ask", {
+        const response = await fetch(withBase("/api/planner/ask"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt, place, dates, context, saved: items.map((i) => i.name), traveller: travellerLine(readTraveller()) }),

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Chip } from "./agent/follow-ups";
+import { withBase } from "../lib/base-path";
 
 // The chips above the prompt bar: generated starters on an empty trip, and after every agent
 // turn, the planner's suggested next steps or likely answers. Each trip keeps its last set.
@@ -64,7 +65,7 @@ export const savedChips = {
 
 // Asks the agent route for chips after a turn: next steps, or answers to an open question.
 export async function fetchFollowUps(messages: unknown[], asking: boolean, signal?: AbortSignal) {
-  const response = await fetch("/api/moodboard/agent", {
+  const response = await fetch(withBase("/api/moodboard/agent"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages, followUps: { asking } }),
@@ -81,7 +82,7 @@ export function useStarters(enabled: boolean, avoid: string[]) {
   const places = avoid.join(",");
   useEffect(() => {
     if (!enabled) return;
-    starters ??= fetch(`/api/moodboard/agent?avoid=${encodeURIComponent(places)}`)
+    starters ??= fetch(withBase(`/api/moodboard/agent?avoid=${encodeURIComponent(places)}`))
       .then((response) => (response.ok ? response.json() : { chips: [] }))
       .then((result: { chips?: Chip[] }) => result.chips ?? [])
       .catch(() => []);

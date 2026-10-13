@@ -8,6 +8,7 @@ import { TripBridge } from "./itinerary-spread";
 import { useItinerary } from "./itinerary";
 import "maplibre-gl/dist/maplibre-gl.css";
 import "./map.css";
+import { withBase } from "../../lib/base-path";
 
 // Maps for the planner, in the design system's quiet colours: MapLibre over OpenFreeMap's keyless
 // vector tiles, restyled to our greys with the map's own labels removed, under coral numbered pins
@@ -30,7 +31,7 @@ export function useGeocode(names: string[], near?: string) {
     if (!memo.has(key))
       memo.set(
         key,
-        fetch("/api/planner/geocode", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ names, near }) })
+        fetch(withBase("/api/planner/geocode"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ names, near }) })
           .then((r) => (r.ok ? r.json() : { points: [] }))
           .then((b: { points: Point[] }) => b.points)
           .catch(() => []),
@@ -128,7 +129,7 @@ export function TileMap({
     (async () => {
       const [maplibregl, style] = await Promise.all([import("maplibre-gl"), quietStyle()]);
       if (gone) return;
-      maplibregl.setWorkerUrl("/api/planner/maplibre-worker");
+      maplibregl.setWorkerUrl(withBase("/api/planner/maplibre-worker"));
       const m = new maplibregl.Map({
         container: el,
         style: style as never,
@@ -268,7 +269,7 @@ export function MapSpread({ title, places, near }: { title?: string; places: str
       <div className="hj-map__words">
         <header className="hj-map__head">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`/icons-3d/${iconFor(near ?? title)}-pixar.webp`} alt="" draggable={false} />
+          <img src={withBase(`/icons-3d/${iconFor(near ?? title)}-pixar.webp`)} alt="" draggable={false} />
           <h2>{title}</h2>
         </header>
         <ol className="hj-map__stops">

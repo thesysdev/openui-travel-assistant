@@ -8,6 +8,7 @@ import { readTraveller, travellerLine } from "./money";
 import { iconFor } from "./place-icon";
 import { Reply } from "./steps";
 import "./itinerary-spread.css";
+import { withBase } from "../../lib/base-path";
 
 // The Explore agent doesn't write a day-by-day plan itself: it ends its entry with Itinerary, and
 // this spread hands the trip's places (every spread's places, plus anything already saved) to the
@@ -153,7 +154,7 @@ export function ItineraryPreview({
         </span>
         <span className="hj-itin__top">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="hj-itin__icon" src={`/icons-3d/${iconFor(place)}-pixar.webp`} alt="" draggable={false} />
+          <img className="hj-itin__icon" src={withBase(`/icons-3d/${iconFor(place)}-pixar.webp`)} alt="" draggable={false} />
           <span className="hj-itin__label">
             <span className="hj-itin__place">{place || "Your trip"}</span>
             <span className="hj-itin__action">{building && !cols.length ? "Arranging your days…" : "Open itinerary"}</span>
@@ -185,7 +186,7 @@ export function Itinerary({ props }: { props: { title?: string } }) {
     } catch {}
     started.current = true;
     setBuilding(true);
-    fetch(`/api/planner/itinerary/agent?trip=${encodeURIComponent(itinerary.trip)}`, {
+    fetch(withBase(`/api/planner/itinerary/agent?trip=${encodeURIComponent(itinerary.trip)}`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
