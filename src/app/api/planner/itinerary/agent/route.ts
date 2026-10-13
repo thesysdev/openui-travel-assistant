@@ -1,11 +1,12 @@
 import OpenAI from "openai";
 import { doodleNames, doodlePlaces } from "../../../../planner/doodle-names";
-import { type ItineraryItem, list, tripKey } from "../store";
+import { type ItineraryItem, tripKey } from "../../../../../lib/itinerary";
+import { hasAllowedOrigin } from "../../../../../lib/same-origin";
 
-// The itinerary board's agent. It reads the trip's saved items and one request ("group these by
+// The itinerary board's agent. It takes the trip's items (sent by the browser) and one request ("group these by
 // day", "remove the museums", "add a note to the castle") and answers with the whole plan as
 // JSON: every item kept, in order, with its day, time and note; items to remove; places to add.
-// The route applies that to the store and returns the new items, so the board just redraws.
+// The route applies that and returns the new items, which the browser saves; the board redraws.
 
 export const runtime = "nodejs";
 
@@ -31,6 +32,8 @@ Rules:
 - If the request is only "make a plan" or similar, group everything by day with sensible times.`;
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const trip = tripKey(new URL(request.url).searchParams.get("trip"));
   const { prompt, dates, context, traveller, seed, days: asked, items: board } = (await request.json()) as {
     prompt?: string;
@@ -62,7 +65,7 @@ export async function POST(request: Request) {
   };
   // The board comes with the request, so nothing is written on the server: the answer is the new
   // board, which the browser saves.
-  let items: ItineraryItem[] = Array.isArray(board) ? board.filter((i) => i?.id && i.name) : await list(trip).catch(() => []);
+  let items: ItineraryItem[] = Array.isArray(board) ? board.filter((i) => i?.id && i.name) : [];
   if (Array.isArray(seed) && seed.length) {
     const known = (s: Partial<ItineraryItem>) =>
       items.some((i) => (!!s.subject && i.subject === s.subject) || i.name.toLowerCase() === s.name?.toLowerCase());
@@ -91,6 +94,7 @@ export async function POST(request: Request) {
     const completion = await gateway.chat.completions.create(
       {
         model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+        store: false,
         messages: [
           { role: "system", content: system(dates?.trim() ?? "", days) },
           {

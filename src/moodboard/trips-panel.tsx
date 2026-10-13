@@ -10,7 +10,7 @@ import "./trips.css";
 // The moodboard with a floating Trips panel on the left. Each trip mounts its own studio, so
 // switching trips swaps the board, the planner conversation, and any open question at once.
 
-// A /design/moodboard?trip=... link plans in a fresh trip, not on top of the open one.
+// A /moodboard?trip=... link plans in a fresh trip, not on top of the open one.
 if (typeof window !== "undefined" && new URL(window.location.href).searchParams.get("trip")?.trim())
   trips.create();
 

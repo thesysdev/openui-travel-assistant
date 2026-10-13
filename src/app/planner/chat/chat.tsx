@@ -8,13 +8,12 @@ import { TripBridge } from "../itinerary-spread";
 import { HotelsContext, readReply } from "../library";
 import { readTraveller, travellerLine } from "../money";
 import { chatLibrary, ChatTurn } from "./chat-library";
-import { wholeBlocks } from "./chat-stream";
 import "./chat.css";
 
 // The Chat tab: the trip as a conversation with a travel agent, in one centred column on the
 // white page. Your messages are written in pencil, letter by letter, like the journal's; while
-// the agent works a pencil line keeps drawing under them, and the reply then writes in block by
-// block as it streams (chat-stream.ts). Replies are OpenUI programs in the chat library (chat-library.tsx). The chat
+// the agent works a pencil line keeps drawing under them, and the reply then renders as it
+// streams. Replies are OpenUI programs in the chat library (chat-library.tsx). The chat
 // belongs to the trip, so it shares Explore's journal and the Itinerary board.
 
 export type ChatTurnData = { prompt: string; code: string };
@@ -181,12 +180,10 @@ export function ChatThinking() {
   );
 }
 
-/** One reply. While it streams it writes in block by block (chat-stream.ts); once whole, a fresh
- *  one waits (at most 2.5s) for its photos, then rises in. */
+/** One reply, rendered as it streams. */
 export function ChatAnswer({
   code,
   turn,
-  fresh,
   streaming = false,
   send,
   answer,
@@ -194,8 +191,7 @@ export function ChatAnswer({
 }: {
   code: string;
   turn: string;
-  fresh?: boolean;
-  /** The reply is still arriving: show its whole blocks so far. */
+  /** The reply is still arriving: it renders what has arrived so far. */
   streaming?: boolean;
   send?: (text: string) => void;
   /** The message that followed this reply. */
@@ -203,29 +199,11 @@ export function ChatAnswer({
   programs?: string[];
 }) {
   const reply = readReply(code, streaming);
-  const program = streaming ? wholeBlocks(reply.program).program : reply.program;
-  const box = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(!fresh);
-  useEffect(() => {
-    if (shown) return;
-    const started = performance.now();
-    let timer = 0;
-    const check = () => {
-      const frames = [...(box.current?.querySelectorAll(".pl-chat-photo:not(.pl-chat-hotel__photo), .pl-chat-inline") ?? [])];
-      const loaded = frames.every((f) => {
-        const img = f.querySelector("img");
-        return img && img.complete && img.naturalWidth > 0;
-      });
-      if (loaded || performance.now() - started > 2500) setShown(true);
-      else timer = window.setTimeout(check, 120);
-    };
-    timer = window.setTimeout(check, 120);
-    return () => window.clearTimeout(timer);
-  }, [shown]);
+  const program = reply.program;
   return (
-    <div className={`pl-chat-reply${streaming ? " is-streaming" : shown ? (fresh ? " is-arriving" : "") : " is-holding"}`} ref={box}>
-      {/* The pencil line until the first block is in, or while a fresh reply waits for photos. */}
-      {(streaming ? program : shown) ? null : <ChatThinking />}
+    <div className={`pl-chat-reply${streaming ? " is-streaming" : ""}`}>
+      {/* The pencil line until the first words of the reply are in. */}
+      {streaming && !program ? <ChatThinking /> : null}
       {program || !streaming ? (
         <div className="pl-chat-reply__body">
           <HotelsContext.Provider value={reply.hotels}>

@@ -56,22 +56,6 @@
   justify-content: flex-end;
 }
 
-/* The doodle set in /components. */
-.pl-doodle-sheet {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 24px;
-}
-.pl-doodle-sheet figure {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 14px;
-  color: #5f6369;
-}
-
 /* ---------- Die-cut stickers ---------- */
 
 .pl-sticker-art {
@@ -117,8 +101,4 @@
     animation: none;
   }
 }
-.pl-doodle-sheet--big {
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 36px 24px;
-  padding: 40px;
-}
+

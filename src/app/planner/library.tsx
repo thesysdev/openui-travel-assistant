@@ -2,12 +2,12 @@
 
 import { useIsStreaming } from "@openuidev/react-lang";
 import { createContext, type CSSProperties, Fragment, type KeyboardEvent, type ReactNode, useContext, useEffect, useId, useState } from "react";
-import { DrawablyCircle, DrawablyHighlight, DrawablyUnderline } from "../horizontal-journal/drawably/react.js";
+import { DrawablyCircle, DrawablyHighlight, DrawablyUnderline } from "../journal/drawably/react.js";
 import { type arrowDirs, type arrowStyles, buildLibrary, type colors } from "./schema";
 import { Book, Dates, Next, Picks, Question } from "./steps";
 import { SaveHeart } from "./itinerary";
 import { Price } from "./money";
-import "../horizontal-journal/drawably/style.css";
+import "../journal/drawably/style.css";
 import "./spreads.css";
 import { Itinerary } from "./itinerary-spread";
 import { MapStep } from "./map";

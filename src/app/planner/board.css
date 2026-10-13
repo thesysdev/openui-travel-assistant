@@ -14,9 +14,7 @@
   position: absolute;
   inset: 0;
 }
-.pl-sample-board .pl-board__canvas {
-  inset: 0;
-}
+
 .pl-board__paper {
   position: absolute;
   inset: 0;

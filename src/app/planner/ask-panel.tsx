@@ -12,6 +12,18 @@ import "./ask-panel.css";
 export type AskPlace = { name: string; subject: string; note?: string; kind?: "place" | "food" | "stay" };
 export type AskAnswer = { question: string; answer?: string; places?: AskPlace[]; error?: string };
 
+/** The answer and its places from the route's JSON, whole or (while it streams) partial. While it
+ *  streams, the last place may still be half-written, so only the ones before it show (a card
+ *  looks up its photo by subject, which must be whole). At most six, best first. */
+export function readAsk(value: unknown, streaming: boolean): Omit<AskAnswer, "question"> {
+  const reply = (value && typeof value === "object" ? value : {}) as { answer?: unknown; places?: unknown };
+  const all = Array.isArray(reply.places) ? reply.places : [];
+  const places = (streaming ? all.slice(0, -1) : all)
+    .filter((p): p is AskPlace => !!p && typeof p.name === "string" && !!p.name && typeof p.subject === "string" && !!p.subject)
+    .slice(0, 6);
+  return { answer: typeof reply.answer === "string" ? reply.answer : "", places };
+}
+
 /** The drag payload type the board listens for. */
 export const dragType = "application/x-planner-item";
 
@@ -75,7 +87,7 @@ export function AskPanel({ ask, busy, onClose, inline }: { ask: AskAnswer; busy?
           </button>
         ) : null}
       </header>
-      {busy ? (
+      {busy && !ask.answer ? (
         <div className="pl-ask__waiting" aria-hidden>
           <span />
           <span />
@@ -93,7 +105,7 @@ export function AskPanel({ ask, busy, onClose, inline }: { ask: AskAnswer; busy?
                   <AskCard key={p.subject} place={p} />
                 ))}
               </div>
-              <p className="pl-ask__hint">Drag a print onto a day, or tap its heart to keep it in Favourites.</p>
+              {busy ? null : <p className="pl-ask__hint">Drag a print onto a day, or tap its heart to keep it in Favourites.</p>}
             </>
           ) : null}
         </>

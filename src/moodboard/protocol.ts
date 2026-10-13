@@ -19,7 +19,9 @@ const REPLACE = /^===\s*replace\s+(p\d+)\s*\|\s*([a-z-]+)(?:@([1-4]))?\s*\|\s*(.
 const ADD = /^===\s*([a-z-]+)(?:@([1-4]))?\s*\|\s*(.+?)\s*$/i;
 
 // The Gateway wraps the reply in content markers and a code fence, and may append a second,
-// merged copy. Keep the first block, then split it at each header.
+// merged copy: one program with a single root and no === headers. Keep the first block, then
+// split it at each header. (lang-core's parseMessage() follows the protocol's "last content wins"
+// and would return the merged copy, which has no pieces to place, so it isn't used here.)
 export function parseReply(raw: string, done = false): { newBoard: boolean; ops: Op[] } {
   let text = raw;
   const marker = text.indexOf("]]>openui:content");

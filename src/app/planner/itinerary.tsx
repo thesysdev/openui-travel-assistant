@@ -2,7 +2,7 @@
 
 import { Compass, Heart, Map as MapIcon } from "lucide-react";
 import { createContext, type MouseEvent, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import type { ItineraryItem } from "../api/planner/itinerary/store";
+import type { ItineraryItem } from "../../lib/itinerary";
 import "./itinerary.css";
 import "./board.css";
 
@@ -29,12 +29,11 @@ type Itinerary = {
 const ItineraryContext = createContext<Itinerary | null>(null);
 export const useItinerary = () => useContext(ItineraryContext);
 
-const api = (trip: string, query = "") => `/api/planner/itinerary?trip=${encodeURIComponent(trip)}${query}`;
 const matches = (item: ItineraryItem, what: { subject?: string; name: string }) =>
   (!!what.subject && item.subject === what.subject) || item.name.toLowerCase() === what.name.toLowerCase();
 
 // Boards live in the visitor's browser, one list per trip (like the journal's planner:v1), so a
-// hosted copy needs no server storage. A trip saved by the old server store comes across once.
+// hosted copy needs no server storage.
 const boardKey = (trip: string) => `planner:board:${trip}`;
 const readBoard = (trip: string): ItineraryItem[] | null => {
   try {
@@ -65,22 +64,7 @@ export function ItineraryProvider({ trip, children }: { trip: string; children: 
   }, []);
   useEffect(() => {
     if (!trip) return;
-    let gone = false;
-    const saved = readBoard(trip);
-    setStored(saved ?? []);
-    if (saved) return;
-    // Not in this browser yet: bring over what the old server store had for it, if anything.
-    fetch(api(trip))
-      .then((r) => (r.ok ? r.json() : { items: [] }))
-      .then((body: { items?: ItineraryItem[] }) => {
-        if (gone || !body.items?.length) return;
-        setStored(body.items);
-        writeBoard(trip, body.items);
-      })
-      .catch(() => {});
-    return () => {
-      gone = true;
-    };
+    setStored(readBoard(trip) ?? []);
   }, [trip]);
 
   const find = useCallback((what: { subject?: string; name: string }) => items.find((i) => matches(i, what)), [items]);

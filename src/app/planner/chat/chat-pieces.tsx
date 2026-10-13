@@ -2,7 +2,7 @@
 
 import { ArrowRight, Bus, Car, Check, Plane, Ship, TrainFront } from "lucide-react";
 import { Fragment, useContext, useState } from "react";
-import { DrawablyCircle, DrawablyHighlight } from "../../horizontal-journal/drawably/react.js";
+import { DrawablyCircle, DrawablyHighlight } from "../../journal/drawably/react.js";
 import { SaveHeart } from "../itinerary";
 import { type FollowUp, FollowUpCards } from "../home";
 import { HandArrow, Marked, SheetOpener, usePhoto } from "../library";

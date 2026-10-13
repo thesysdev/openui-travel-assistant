@@ -190,8 +190,7 @@ export function WeatherLine({ weather: given }: { weather?: Weather }) {
   );
 }
 
-/** The Pixar-style render where one exists, else the original felt one. New renders show up
- *  as they land in public/icons-3d, with no list to keep in step. */
+/** A place's 3D icon from public/icons-3d; onMissing runs when there's none for it. */
 function Illustration({ icon, onMissing }: { icon: string; onMissing?: () => void }) {
   // An image that finished loading before hydration never fires onLoad, so check once mounted.
   const img = useRef<HTMLImageElement>(null);
@@ -205,11 +204,7 @@ function Illustration({ icon, onMissing }: { icon: string; onMissing?: () => voi
       src={`/icons-3d/${icon}-pixar.webp`}
       alt=""
       onLoad={(e) => e.currentTarget.classList.add("is-loaded")}
-      onError={(e) => {
-        const felt = `/icons-3d/${icon}.webp`;
-        if (!e.currentTarget.src.endsWith(felt)) e.currentTarget.src = felt;
-        else onMissing?.();
-      }}
+      onError={() => onMissing?.()}
     />
   );
 }

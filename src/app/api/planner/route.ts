@@ -1,6 +1,7 @@
 import { generateSystemPrompt } from "@openuidev/lang-core";
 import { journalSpec } from "../../planner/schema";
 import { sampleStays, staysRules, streamAgent, today } from "./agent";
+import { hasAllowedOrigin } from "../../../lib/same-origin";
 
 export const runtime = "nodejs";
 
@@ -59,6 +60,8 @@ function journalPrompt() {
 // Streams one entry as plain OpenUI Lang. Earlier entries go along as the conversation so
 // follow-up questions know the trip. Hotel searches run through the shared agent loop.
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const { prompt, history, traveller } = (await request.json()) as { prompt?: string; history?: Turn[]; traveller?: string };
   if (!prompt?.trim()) return Response.json({ error: "Write where you want to go." }, { status: 400 });
   return streamAgent({

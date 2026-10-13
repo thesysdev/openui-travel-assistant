@@ -15,6 +15,7 @@ import {
   isAskTool,
   toQuestion,
 } from "../../../../moodboard/agent/questions";
+import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 export const runtime = "nodejs";
 
@@ -56,6 +57,8 @@ const priceTrendsTool = {
 const tools = [searchStaysTool(), priceTrendsTool, ...askTools];
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const body = (await request.json()) as {
     prompt?: string;
     board?: Piece[];
@@ -121,6 +124,7 @@ export async function POST(request: Request) {
           const completion = await gateway.chat.completions.create(
             {
               model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+              store: false,
               messages: [{ role: "system", content: moodboardAgentPrompt(today()) }, ...messages],
               tools,
               max_completion_tokens: 8000,

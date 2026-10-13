@@ -5,20 +5,15 @@ import {
   fetchLLM,
   openAIMessageFormat,
   openAIReadableStreamAdapter,
-  useOpenuiCloudStorage,
   useSystemThemeMode,
 } from "@openuidev/react-ui";
+import { useOpenuiCloudStorage } from "@openuidev/react-headless";
 import { Briefcase, CalendarDays, Users, Wallet } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { darkTheme, lightTheme } from "../lib/theme";
 import { library } from "../library";
-
-// Send the thread's messages in Chat Completions format and read the runner's stream from the route.
-const llm = fetchLLM({
-  url: "/api/chat",
-  streamAdapter: openAIReadableStreamAdapter(),
-  messageFormat: openAIMessageFormat,
-});
+import { getOrCreateUserId, USER_ID_HEADER } from "../lib/user-id";
+import { BackHome } from "./back-home";
 
 const starters = [
   {
@@ -48,15 +43,36 @@ const starters = [
 export default function BookingChat() {
   const mode = useSystemThemeMode();
   const theme = useMemo(() => ({ mode, lightTheme, darkTheme }), [mode]);
-  // Store threads as Gateway conversations, which the browser reaches with a short-lived token
-  // from /api/frontend-token. The chat route appends each turn to the thread's conversation, so
-  // a thread opened again loads its messages.
+  // Threads are Gateway conversations, which the browser reaches with a short-lived token from
+  // /api/frontend-token, scoped to this tab session's anonymous visitor id (as in the OpenUI docs
+  // chat). The route loads a thread's earlier turns itself, reading as this visitor, uses only
+  // the new question, and appends the turn, so a reopened thread loads it.
+  const [userId] = useState(getOrCreateUserId);
+  const [llm] = useState(() =>
+    fetchLLM({
+      url: "/api/chat",
+      streamAdapter: openAIReadableStreamAdapter(),
+      messageFormat: openAIMessageFormat,
+      headers: { [USER_ID_HEADER]: userId },
+    }),
+  );
+  const tokenFetch = useMemo<typeof fetch>(
+    () => (input, init) => {
+      if (input !== "/api/frontend-token") return fetch(input, init);
+      const headers = new Headers(init?.headers);
+      headers.set(USER_ID_HEADER, userId);
+      return fetch(input, { ...init, headers });
+    },
+    [userId],
+  );
   const storage = useOpenuiCloudStorage({
     token: "/api/frontend-token",
     features: { artifact: false },
+    fetch: tokenFetch,
   });
   return (
     <div className="booking-app">
+      <BackHome />
       <AgentInterface
         llm={llm}
         storage={storage}

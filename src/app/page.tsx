@@ -1,7 +1,7 @@
-import BookingChat from "../components/booking-chat";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
+// The planner is the home page. It keeps its own addresses (/planner/explore, /planner/chat,
+// /planner/itinerary), so / sends visitors there.
 export default function Page() {
-  return <BookingChat />;
+  redirect("/planner");
 }

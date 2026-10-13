@@ -2,7 +2,7 @@
    left and a sticky booking card on the right. Timeless Serif throughout, sized for hierarchy;
    the hand font only for the aside. */
 
-.hj-sheet-backdrop {
+:where(.planner-page) .hj-sheet-backdrop {
   position: fixed;
   z-index: 40;
   inset: 0;
@@ -13,7 +13,7 @@
   backdrop-filter: blur(6px);
   animation: hj-sheet-fade 220ms ease both;
 }
-.hj-sheet-panel {
+:where(.planner-page) .hj-sheet-panel {
   position: relative;
   box-sizing: border-box;
   width: min(1120px, 100%);
@@ -42,7 +42,7 @@
 /* Sheets opened from inside a sheet stack in the same spot. The one on top rises in as usual;
    each beneath it steps back, up and a little smaller, dimmed, so the pile reads at a glance and
    only the top one takes clicks. Past two deep the older ones fade out. */
-.hj-sheet-layer {
+:where(.planner-page) .hj-sheet-layer {
   --depth: 0;
   grid-area: 1 / 1;
   display: grid;
@@ -56,54 +56,48 @@
     opacity 300ms ease,
     filter 300ms ease;
 }
-.hj-sheet-layer[inert] {
+:where(.planner-page) .hj-sheet-layer[inert] {
   filter: brightness(0.82);
   pointer-events: none;
 }
-.hj-sheet-layer[inert] .hj-sheet-panel {
+:where(.planner-page) .hj-sheet-layer[inert] .hj-sheet-panel {
   overflow: hidden;
 }
-.hj-sheet-layer[data-buried] {
+:where(.planner-page) .hj-sheet-layer[data-buried] {
   opacity: 0;
 }
 /* A nearby place that opens its own sheet: the whole card is the target, and its photo lifts. */
-.hj-doc__thing.is-open {
+:where(.planner-page) .hj-doc__thing.is-open {
   cursor: pointer;
   outline: none;
 }
-.hj-doc__thing.is-open .hj-img {
+:where(.planner-page) .hj-doc__thing.is-open .hj-img {
   transition:
     transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1),
     box-shadow 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.hj-doc__thing.is-open:is(:hover, :focus-visible) .hj-img {
+:where(.planner-page) .hj-doc__thing.is-open:is(:hover, :focus-visible) .hj-img {
   transform: translateY(-4px) scale(1.03) rotate(-1deg);
   box-shadow: 0 18px 36px -14px rgb(0 0 0 / 0.4);
 }
-.hj-doc__thing.is-open:nth-child(even):is(:hover, :focus-visible) .hj-img {
+:where(.planner-page) .hj-doc__thing.is-open:nth-child(even):is(:hover, :focus-visible) .hj-img {
   transform: translateY(-4px) scale(1.03) rotate(1deg);
 }
-.hj-doc__thing.is-open:focus-visible .hj-doc__strong {
+:where(.planner-page) .hj-doc__thing.is-open:focus-visible .hj-doc__strong {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .hj-sheet-layer,
-  .hj-doc__thing.is-open .hj-img {
+  :where(.planner-page) .hj-sheet-layer,
+  :where(.planner-page) .hj-doc__thing.is-open .hj-img {
     transition: none;
   }
 }
 
-/* In /components the sheet sits on the stage instead of floating over the journal. */
-.hj-sheet-panel--inline {
-  max-height: none;
-  overflow: visible;
-  animation: none;
-}
-.hj-sheet-panel > div {
+:where(.planner-page) .hj-sheet-panel > div {
   display: contents;
 }
-.hj-sheet-close {
+:where(.planner-page) .hj-sheet-close {
   position: absolute;
   z-index: 2;
   top: 20px;
@@ -119,11 +113,11 @@
   cursor: pointer;
   transition: transform 150ms;
 }
-.hj-sheet-close:hover {
+:where(.planner-page) .hj-sheet-close:hover {
   transform: rotate(90deg);
 }
 
-.hj-doc {
+:where(.planner-page) .hj-doc {
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -132,35 +126,35 @@
   padding: 40px 48px 56px;
 }
 /* journal.css resets these later in the cascade, so the sheet's own spacing below is scoped one deeper. */
-.hj-doc :where(h1, h3, p, ul, li) {
+:where(.planner-page) .hj-doc :where(h1, h3, p, ul, li) {
   margin: 0;
   padding: 0;
   font-weight: inherit;
 }
-.hj-doc header {
+:where(.planner-page) .hj-doc header {
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding-right: 48px;
 }
-.hj-doc h1 {
+:where(.planner-page) .hj-doc h1 {
   font-size: 56px;
   line-height: 1;
   letter-spacing: -0.03em;
 }
-.hj-doc__muted {
+:where(.planner-page) .hj-doc__muted {
   color: rgb(0 0 0 / 0.55);
 }
-.hj-doc header p {
+:where(.planner-page) .hj-doc header p {
   font-size: 20px;
 }
-.hj-doc__strong {
+:where(.planner-page) .hj-doc__strong {
   font-size: 20px;
   line-height: 1.2;
 }
 
 /* One tall photo and four small, rounded as a group. */
-.hj-doc__photos {
+:where(.planner-page) .hj-doc__photos {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   grid-template-rows: 200px 200px;
@@ -168,89 +162,89 @@
   overflow: hidden;
   border-radius: 18px;
 }
-.hj-doc__photos > :first-child {
+:where(.planner-page) .hj-doc__photos > :first-child {
   grid-row: span 2;
 }
-.hj-doc__photos .hj-img {
+:where(.planner-page) .hj-doc__photos .hj-img {
   height: 100%;
 }
 
-.hj-doc__body {
+:where(.planner-page) .hj-doc__body {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
   gap: 64px;
   align-items: start;
 }
-.hj-doc__main {
+:where(.planner-page) .hj-doc__main {
   display: flex;
   flex-direction: column;
 }
-.hj-doc .hj-doc__main > * + * {
+:where(.planner-page) .hj-doc .hj-doc__main > * + * {
   padding-top: 28px;
   margin-top: 28px;
   border-top: 1px solid rgb(0 0 0 / 0.12);
 }
-.hj-doc__highlights {
+:where(.planner-page) .hj-doc__highlights {
   display: flex;
   flex-direction: column;
   gap: 20px;
   list-style: none;
 }
-.hj-doc__highlights li {
+:where(.planner-page) .hj-doc__highlights li {
   display: flex;
   flex-direction: column;
   gap: 2px;
   font-size: 17px;
   line-height: 1.35;
 }
-.hj-doc__about {
+:where(.planner-page) .hj-doc__about {
   font-size: 20px;
   line-height: 1.45;
 }
-.hj-doc__section h3 {
+:where(.planner-page) .hj-doc__section h3 {
   margin-bottom: 18px;
   font-size: 30px;
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
-.hj-doc__things {
+:where(.planner-page) .hj-doc__things {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px 16px;
 }
-.hj-doc__thing {
+:where(.planner-page) .hj-doc__thing {
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-size: 15px;
   line-height: 1.3;
 }
-.hj-doc__thing .hj-img {
+:where(.planner-page) .hj-doc__thing .hj-img {
   aspect-ratio: 1;
   margin-bottom: 6px;
   border-radius: 14px;
 }
-.hj-doc__thing .hj-doc__strong {
+:where(.planner-page) .hj-doc__thing .hj-doc__strong {
   font-size: 18px;
 }
-.hj-doc__tips {
+:where(.planner-page) .hj-doc__tips {
   display: flex;
   flex-direction: column;
   list-style: none;
   font-size: 17px;
   line-height: 1.35;
 }
-.hj-doc__tips li {
+:where(.planner-page) .hj-doc__tips li {
   padding: 12px 0;
   border-top: 1px solid rgb(0 0 0 / 0.1);
 }
-.hj-doc__tips li:first-child {
+:where(.planner-page) .hj-doc__tips li:first-child {
   border-top: 0;
   padding-top: 0;
 }
 
 /* The sticky card on the right. */
-.hj-doc aside {
+:where(.planner-page) .hj-doc aside {
   position: sticky;
   top: 24px;
   display: flex;
@@ -258,7 +252,7 @@
   gap: 24px;
   min-width: 0;
 }
-.hj-doc__card {
+:where(.planner-page) .hj-doc__card {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -267,30 +261,30 @@
   border-radius: 18px;
   box-shadow: 0 8px 28px rgb(0 0 0 / 0.12);
 }
-.hj-doc__pen {
+:where(.planner-page) .hj-doc__pen {
   align-self: flex-start;
   max-width: 100%;
   font-size: 30px;
 }
-.hj-doc__booking {
+:where(.planner-page) .hj-doc__booking {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.hj-doc__from {
+:where(.planner-page) .hj-doc__from {
   font-size: 40px;
   line-height: 1;
   letter-spacing: -0.03em;
 }
-.hj-doc__booking ul {
+:where(.planner-page) .hj-doc__booking ul {
   display: flex;
   flex-direction: column;
   list-style: none;
 }
-.hj-doc__booking li + li {
+:where(.planner-page) .hj-doc__booking li + li {
   border-top: 1px solid rgb(0 0 0 / 0.08);
 }
-.hj-doc__booking li a {
+:where(.planner-page) .hj-doc__booking li a {
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr) auto;
   align-items: center;
@@ -299,35 +293,35 @@
   color: inherit;
   text-decoration: none;
 }
-.hj-doc__booking li .hj-img {
+:where(.planner-page) .hj-doc__booking li .hj-img {
   display: block;
   width: 56px;
   height: 56px;
   border-radius: 10px;
 }
-.hj-doc__hotel {
+:where(.planner-page) .hj-doc__hotel {
   display: flex;
   flex-direction: column;
   min-width: 0;
   font-size: 16px;
   line-height: 1.25;
 }
-.hj-doc__hotel > * {
+:where(.planner-page) .hj-doc__hotel > * {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hj-doc__hotel .hj-doc__muted {
+:where(.planner-page) .hj-doc__hotel .hj-doc__muted {
   font-size: 14px;
 }
-.hj-doc__price {
+:where(.planner-page) .hj-doc__price {
   font-size: 18px;
 }
-.hj-doc__booking li a:hover .hj-doc__hotel > :first-child {
+:where(.planner-page) .hj-doc__booking li a:hover .hj-doc__hotel > :first-child {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.hj-doc__book {
+:where(.planner-page) .hj-doc__book {
   display: block;
   padding: 16px;
   border-radius: 12px;
@@ -338,26 +332,26 @@
   text-decoration: none;
   transition: transform 150ms, background 150ms;
 }
-.hj-doc__book:hover {
+:where(.planner-page) .hj-doc__book:hover {
   background: #f03a4c;
   transform: translateY(-1px);
 }
 
 /* Waiting, then written: both sit in one cell, and the written sheet shows once it's whole. */
-.hj-sheet-panel > .hj-sheet-stage {
+:where(.planner-page) .hj-sheet-panel > .hj-sheet-stage {
   display: grid;
 }
-.hj-sheet-stage > * {
+:where(.planner-page) .hj-sheet-stage > * {
   grid-area: 1 / 1;
   min-width: 0;
 }
-.hj-sheet-content {
+:where(.planner-page) .hj-sheet-content {
   visibility: hidden;
 }
-.hj-sheet-content > div {
+:where(.planner-page) .hj-sheet-content > div {
   display: contents;
 }
-.hj-sheet-content.is-shown {
+:where(.planner-page) .hj-sheet-content.is-shown {
   visibility: visible;
   animation: hj-sheet-reveal 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
@@ -366,22 +360,22 @@
     opacity: 0;
   }
 }
-.hj-doc.is-waiting {
+:where(.planner-page) .hj-doc.is-waiting {
   position: relative;
   min-height: min(720px, 80vh);
 }
-.hj-doc.is-waiting > :not(.pl-breeze) {
+:where(.planner-page) .hj-doc.is-waiting > :not(.pl-breeze) {
   position: relative;
   z-index: 1;
 }
 /* The title in pencil, written letter by letter like your message in the journal. */
-.hj-doc.is-waiting h1.hj-doc__writing {
+:where(.planner-page) .hj-doc.is-waiting h1.hj-doc__writing {
   font-family: var(--font-hand), cursive;
   font-weight: 400;
   letter-spacing: 0;
   color: #000;
 }
-.hj-doc__photos .hj-img.is-shimmer {
+:where(.planner-page) .hj-doc__photos .hj-img.is-shimmer {
   background:
     linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.7) 50%, transparent 70%) 0 0 / 300% 100%,
     #eef0f2;
@@ -389,56 +383,33 @@
 }
 
 @media (max-width: 860px) {
-  .hj-doc {
+  :where(.planner-page) .hj-doc {
     padding: 28px 20px 40px;
   }
-  .hj-doc h1 {
+  :where(.planner-page) .hj-doc h1 {
     font-size: 40px;
   }
-  .hj-doc__photos {
+  :where(.planner-page) .hj-doc__photos {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 220px 120px 120px;
   }
-  .hj-doc__photos > :first-child {
+  :where(.planner-page) .hj-doc__photos > :first-child {
     grid-row: auto;
     grid-column: span 2;
   }
-  .hj-doc__body {
+  :where(.planner-page) .hj-doc__body {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .hj-doc aside {
+  :where(.planner-page) .hj-doc aside {
     position: static;
   }
-  .hj-doc__things {
+  :where(.planner-page) .hj-doc__things {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-.hj-doc__pen .hj-pen__text {
+:where(.planner-page) .hj-doc__pen .hj-pen__text {
   max-width: 100%;
   white-space: normal;
 }
 
-/* The stacked sheet in /components: the same layers on a fixed-height stage, with room above for
-   the sheets that step back. */
-.pl-sheet-stack {
-  display: grid;
-  height: 780px;
-  padding: 48px 0 0;
-  box-sizing: border-box;
-  border-radius: 24px;
-  background: rgb(0 0 0 / 0.45);
-  overflow: hidden;
-}
-.pl-sheet-stack .hj-sheet-layer {
-  align-self: stretch;
-  max-height: 100%;
-  min-height: 0;
-  padding: 0 24px;
-  box-sizing: border-box;
-}
-.pl-sheet-stack .hj-sheet-panel {
-  height: 100%;
-  max-height: 100%;
-  border-radius: 24px 24px 0 0;
-}

@@ -1,16 +1,16 @@
 /* The planner's home page: weather, the question and the input, with the place chips along the bottom. */
 
-.pl-home {
+:where(.planner-page) .pl-home {
   display: flex;
   flex-direction: column;
   gap: 48px;
   padding: 56px 12vw 64px max(112px, 12vw);
 }
 /* The quick-suggestion chips sit at the foot of the page. */
-.pl-home > .pl-chips {
+:where(.planner-page) .pl-home > .pl-chips {
   flex: none;
 }
-.pl-home__body {
+:where(.planner-page) .pl-home__body {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -19,7 +19,7 @@
   /* Sit a little above the middle of the page. */
   padding-bottom: 4vh;
 }
-.pl-home__title {
+:where(.planner-page) .pl-home__title {
   margin: 0;
   font-size: clamp(44px, 5.6vw, 96px);
   font-weight: inherit;
@@ -30,7 +30,7 @@
 
 /* ---------- Weather, as a line of type above the headline ---------- */
 
-.pl-weather {
+:where(.planner-page) .pl-weather {
   margin: 0;
   font-size: clamp(17px, 1.4vw, 22px);
   line-height: 1.3;
@@ -39,12 +39,12 @@
 /* Icons sit in the line like a word. */
 /* Tucked up to the headline: the body's 40px gap less 30px. Scoped one deeper so the
    journal's margin reset doesn't win. */
-.pl-home .pl-weather {
+:where(.planner-page) .pl-home .pl-weather {
   margin-bottom: -30px;
 }
 /* The icon overhangs the line instead of growing it, so the loaded line is exactly as tall
    as the "Checking the sky" placeholder and nothing below it moves. */
-.pl-weather__icon {
+:where(.planner-page) .pl-weather__icon {
   display: inline-block;
   width: 1.5em;
   height: 1.5em;
@@ -54,16 +54,16 @@
   translate: 0 -0.06em;
   object-fit: contain;
 }
-.pl-weather__flag {
+:where(.planner-page) .pl-weather__flag {
   margin-right: 0.2em;
 }
-.pl-weather.is-loading {
+:where(.planner-page) .pl-weather.is-loading {
   color: var(--ds-color-ink-disabled);
 }
 
 /* ---------- Place cards ---------- */
 
-.pl-chips {
+:where(.planner-page) .pl-chips {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -74,7 +74,7 @@
 }
 /* Light cards that float: no border, a wide soft shadow spread around them. Squircle corners
    where the browser has corner-shape, a plain round corner elsewhere. */
-.pl-chip {
+:where(.planner-page) .pl-chip {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -101,13 +101,13 @@
     color 150ms;
 }
 @supports (corner-shape: squircle) {
-  .pl-chip {
+  :where(.planner-page) .pl-chip {
     border-radius: 44px;
     corner-shape: squircle;
   }
 }
 /* Hover lifts by shadow alone; the card stays where it is. */
-.pl-chip:hover {
+:where(.planner-page) .pl-chip:hover {
   color: var(--ds-color-ink);
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 0.03),
@@ -115,25 +115,25 @@
     0 24px 56px -6px rgb(0 0 0 / 0.16);
 }
 /* Every card the same height: one line each for the city and the country. */
-.pl-chips > li {
+:where(.planner-page) .pl-chips > li {
   display: flex;
 }
-.pl-chip__city,
-.pl-chip__country {
+:where(.planner-page) .pl-chip__city,
+:where(.planner-page) .pl-chip__country {
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.pl-chip__city {
+:where(.planner-page) .pl-chip__city {
   color: var(--ds-color-ink);
 }
-.pl-chip__country {
+:where(.planner-page) .pl-chip__country {
   margin-top: -4px;
   font-size: 13px;
   color: var(--ds-color-ink-tertiary);
 }
-.pl-chip img {
+:where(.planner-page) .pl-chip img {
   width: 112px;
   height: 112px;
   object-fit: contain;
@@ -143,7 +143,7 @@
     opacity 400ms ease-out,
     transform 500ms cubic-bezier(0.3, 1.4, 0.5, 1);
 }
-.pl-chip img.is-loaded {
+:where(.planner-page) .pl-chip img.is-loaded {
   opacity: 1;
   transform: none;
 }
@@ -152,19 +152,19 @@
 
 /* While the five are being picked, the cards are blank shimmering squircles; then each card
    rises in turn, and its illustration pops in as it loads. */
-.pl-chips > li {
+:where(.planner-page) .pl-chips > li {
   animation: pl-rise 520ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
   animation-delay: calc(var(--i, 0) * 70ms);
 }
-.pl-chips.is-loading > li {
+:where(.planner-page) .pl-chips.is-loading > li {
   animation: none;
 }
-.pl-chips.is-loading .pl-chip {
+:where(.planner-page) .pl-chips.is-loading .pl-chip {
   pointer-events: none;
   background: linear-gradient(100deg, #fff 30%, #f1f2f3 50%, #fff 70%) 0 0 / 300% 100%;
   animation: pl-shimmer 1.4s linear infinite;
 }
-.pl-chips.is-loading .pl-chip > * {
+:where(.planner-page) .pl-chips.is-loading .pl-chip > * {
   visibility: hidden;
 }
 @keyframes pl-rise {
@@ -179,10 +179,10 @@
   }
 }
 /* The weather line fades in once it knows where you are; until then it breathes. */
-.pl-weather {
+:where(.planner-page) .pl-weather {
   animation: pl-fade 500ms ease-out both;
 }
-.pl-weather.is-loading {
+:where(.planner-page) .pl-weather.is-loading {
   animation: pl-breathe 1.6s ease-in-out infinite;
 }
 @keyframes pl-fade {
@@ -196,10 +196,10 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .pl-chips > li,
-  .pl-chips.is-loading .pl-chip,
-  .pl-weather,
-  .pl-chip img {
+  :where(.planner-page) .pl-chips > li,
+  :where(.planner-page) .pl-chips.is-loading .pl-chip,
+  :where(.planner-page) .pl-weather,
+  :where(.planner-page) .pl-chip img {
     animation: none;
     transition: none;
   }
@@ -207,12 +207,12 @@
 
 /* ---------- Input ---------- */
 
-.pl-home__form {
+:where(.planner-page) .pl-home__form {
   display: flex;
   align-items: flex-end;
   gap: 16px;
 }
-.pl-home__input {
+:where(.planner-page) .pl-home__input {
   flex: 1;
   box-sizing: border-box;
   padding: 0;
@@ -227,10 +227,10 @@
   line-height: 1.2;
   field-sizing: content;
 }
-.pl-home__input::placeholder {
+:where(.planner-page) .pl-home__input::placeholder {
   color: var(--ds-color-ink-disabled);
 }
-.pl-home__send {
+:where(.planner-page) .pl-home__send {
   display: grid;
   flex: none;
   place-items: center;
@@ -243,40 +243,17 @@
   cursor: pointer;
   transition: transform 150ms;
 }
-.pl-home__send:hover:not(:disabled) {
+:where(.planner-page) .pl-home__send:hover:not(:disabled) {
   transform: translateY(-2px);
 }
-.pl-home__send:disabled {
+:where(.planner-page) .pl-home__send:disabled {
   opacity: 0.3;
   cursor: default;
 }
 
-/* ---------- In /components ---------- */
-
-.pl-stage {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  font-family: var(--ds-font-serif);
-  font-weight: 380;
-  font-variation-settings: var(--ds-font-variation);
-}
-/* The home page shown at a fixed page size, as on a laptop screen. */
-.pl-stage--page {
-  min-height: 720px;
-  border-radius: 12px;
-  background: #f8f9fa;
-}
-.pl-stage--page .pl-home {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 720px;
-  padding: 48px 64px;
-}
-
 /* ---------- Send: a white arrow on a red disc, on the home and the follow-up pages ---------- */
 
-.pl-home__send,
+:where(.planner-page) .pl-home__send,
 .planner-page .hj-ask__send {
   border-radius: 999px;
   background: #ff5364;
@@ -288,33 +265,33 @@
     transform 160ms cubic-bezier(0.3, 1.5, 0.5, 1),
     opacity 160ms;
 }
-.pl-home__send:hover:not(:disabled),
+:where(.planner-page) .pl-home__send:hover:not(:disabled),
 .planner-page .hj-ask__send:hover:not(:disabled) {
   transform: scale(1.1);
 }
-.pl-home__send:active:not(:disabled),
+:where(.planner-page) .pl-home__send:active:not(:disabled),
 .planner-page .hj-ask__send:active:not(:disabled) {
   transform: scale(0.94);
 }
 /* Still red while empty, just faded; full strength as soon as you type. */
-.pl-home__send:disabled,
+:where(.planner-page) .pl-home__send:disabled,
 .planner-page .hj-ask__send:disabled {
   opacity: 0.3;
   box-shadow: none;
 }
-.pl-home__send svg,
+:where(.planner-page) .pl-home__send svg,
 .planner-page .hj-ask__send svg {
   width: 26px;
   height: 26px;
   stroke-width: 2;
 }
 /* On send, the arrow flies out of the top and a new one rises from below. */
-.pl-home__send.is-sending,
+:where(.planner-page) .pl-home__send.is-sending,
 .planner-page .hj-ask__send.is-sending {
   opacity: 1;
   animation: pl-send-press 380ms ease-out;
 }
-.is-sending svg {
+:where(.planner-page) .is-sending svg {
   animation: pl-send-fly 380ms cubic-bezier(0.5, 0, 0.3, 1);
 }
 @keyframes pl-send-fly {
@@ -344,19 +321,19 @@
 
 /* Follow-up cards are a little wider, wrap their words, and centre them when there is no icon,
    so every card in the row keeps the same height. */
-.pl-followups .pl-chip {
+:where(.planner-page) .pl-followups .pl-chip {
   width: 176px;
   min-height: 100%;
 }
-.pl-followups > li {
+:where(.planner-page) .pl-followups > li {
   display: flex;
 }
-.pl-followups .pl-chip__city {
+:where(.planner-page) .pl-followups .pl-chip__city {
   white-space: normal;
   text-wrap: balance;
   line-height: 1.2;
 }
-.pl-followups .pl-chip.is-words {
+:where(.planner-page) .pl-followups .pl-chip.is-words {
   justify-content: center;
   min-height: 150px;
   padding: 18px 18px;
@@ -365,12 +342,12 @@
 
 /* ---------- Stays on the closing page: trivago hotels for the trip's dates ---------- */
 
-.pl-stays {
+:where(.planner-page) .pl-stays {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-.pl-stays__title {
+:where(.planner-page) .pl-stays__title {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -378,11 +355,11 @@
   font-size: 22px;
   letter-spacing: -0.01em;
 }
-.pl-stays__dates {
+:where(.planner-page) .pl-stays__dates {
   font-size: 15px;
   color: var(--ds-color-ink-tertiary);
 }
-.pl-stays__row {
+:where(.planner-page) .pl-stays__row {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 14px;
@@ -390,7 +367,7 @@
   padding: 0;
   list-style: none;
 }
-.pl-stay {
+:where(.planner-page) .pl-stay {
   display: flex;
   gap: 14px;
   height: 100%;
@@ -406,13 +383,13 @@
     0 12px 32px -4px rgb(0 0 0 / 0.06);
   transition: box-shadow 200ms;
 }
-.pl-stay:hover {
+:where(.planner-page) .pl-stay:hover {
   box-shadow:
     0 0 0 1px rgb(0 0 0 / 0.03),
     0 8px 20px -2px rgb(0 0 0 / 0.08),
     0 24px 56px -6px rgb(0 0 0 / 0.16);
 }
-.pl-stay__print {
+:where(.planner-page) .pl-stay__print {
   flex: none;
   width: 76px;
   aspect-ratio: 3 / 4;
@@ -420,13 +397,13 @@
   border-radius: 12px;
   background: var(--ds-color-surface-sunken);
 }
-.pl-stay__print img {
+:where(.planner-page) .pl-stay__print img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.pl-stay__text {
+:where(.planner-page) .pl-stay__text {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -434,7 +411,7 @@
   padding-top: 2px;
   font-size: 15px;
 }
-.pl-stay__name {
+:where(.planner-page) .pl-stay__name {
   font-size: 16px;
   line-height: 1.2;
   display: -webkit-box;
@@ -442,18 +419,18 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.pl-stay__line {
+:where(.planner-page) .pl-stay__line {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   color: var(--ds-color-ink-secondary);
 }
-.pl-stay__rating {
+:where(.planner-page) .pl-stay__rating {
   font-size: 13px;
   color: var(--ds-color-ink-tertiary);
 }
 /* The card's action: a small red pill at the end of the reading path. */
-.pl-stay__book {
+:where(.planner-page) .pl-stay__book {
   align-self: flex-start;
   margin-top: auto;
   padding: 5px 12px;
@@ -464,25 +441,25 @@
   text-decoration: none;
   white-space: nowrap;
 }
-.pl-stay__book:hover {
+:where(.planner-page) .pl-stay__book:hover {
   background: #f23d50;
 }
-.pl-stay__print {
+:where(.planner-page) .pl-stay__print {
   position: relative;
 }
-.pl-stay__print .pl-heart {
+:where(.planner-page) .pl-stay__print .pl-heart {
   top: 4px;
   right: 4px;
   width: 24px;
   height: 24px;
 }
-.pl-stay__print .pl-heart svg {
+:where(.planner-page) .pl-stay__print .pl-heart svg {
   width: 12px;
   height: 12px;
 }
 
 /* The page's own content sits above the ambient sketches (breeze.tsx). */
-.pl-home > :not(.pl-breeze) {
+:where(.planner-page) .pl-home > :not(.pl-breeze) {
   position: relative;
   z-index: 1;
 }

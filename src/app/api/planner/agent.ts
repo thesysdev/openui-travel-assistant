@@ -87,6 +87,7 @@ export function streamAgent({
           const completion = await gateway.chat.completions.create(
             {
               model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+              store: false,
               messages: convo,
               tools: step < 2 ? [searchStaysTool()] : undefined,
               max_completion_tokens: maxTokens,

@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 // Real coordinates for place names, so maps never show a point the model guessed. Names are
 // looked up on OpenStreetMap's Nominatim (one request a second, as its policy asks), only within
@@ -35,7 +36,7 @@ async function lookup(query: string, around?: Box): Promise<Point | null> {
   // Around the trip's city, only results inside a box about 60 km across count.
   const box = around ? `&viewbox=${around.lon - 0.6},${around.lat + 0.6},${around.lon + 0.6},${around.lat - 0.6}&bounded=1` : "";
   const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&addressdetails=1${box}&q=${encodeURIComponent(query)}`;
-  const response = await fetch(url, { headers: { "User-Agent": "openui-travel-planner/1.0 (design exploration)", "Accept-Language": "en" } });
+  const response = await fetch(url, { headers: { "User-Agent": "openui-trip-planner/1.0 (+https://github.com/thesysdev/openui-travel-planner)", "Accept-Language": "en" } });
   if (!response.ok) return null;
   const [hit] = (await response.json()) as { lat: string; lon: string; address?: Record<string, string> }[];
   if (!hit) return null;
@@ -54,6 +55,8 @@ const politely = <T,>(job: () => Promise<T>) => {
 };
 
 export async function POST(request: Request) {
+  // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
+  if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
   const { names, near } = (await request.json()) as { names?: string[]; near?: string };
   if (!Array.isArray(names) || !names.length) return Response.json({ points: [] });
   const known = await load();
