@@ -10,7 +10,7 @@ Needs Node 22.13 or later.
 
 ```bash
 npm install
-echo "THESYS_API_KEY=sk-th-..." > .env.local
+npm run generate:apiKey   # writes THESYS_API_KEY to .env.local
 npm run dev
 ```
 
