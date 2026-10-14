@@ -146,6 +146,8 @@ export function ChatView({ turns, onTurn }: { turns: ChatTurnData[]; onTurn: (tu
             onSend={pending ? undefined : (p) => void send(p)}
             placeholder={bridge?.place ? `Ask anything about ${bridge.place}…` : "Ask your travel agent anything…"}
             label="Message your travel agent"
+            // Links from openui.com hand over a question as ?prompt=.
+            prefillParam="prompt"
           />
         </div>
       </div>
