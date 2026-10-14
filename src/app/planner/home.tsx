@@ -238,9 +238,31 @@ export function PlaceChips({
 /** The home page of a new plan. */
 /** The page's input: one line of type with the red send button beside it. The send animation
  *  plays before `onSend` fires. Shared by the home page and the "Where next?" page. */
-export function PromptForm({ onSend, placeholder, label }: { onSend?: (prompt: string) => void; placeholder: string; label: string }) {
+export function PromptForm({
+  onSend,
+  placeholder,
+  label,
+  prefillParam,
+}: {
+  onSend?: (prompt: string) => void;
+  placeholder: string;
+  label: string;
+  /** A query param to prefill the input from on load (e.g. "prompt"), so a link can hand over a question. */
+  prefillParam?: string;
+}) {
   const [value, setValue] = useState("");
   const input = useRef<HTMLTextAreaElement>(null);
+  // A link can arrive with a question (?prompt=...). Type it in, ready to send, and take it
+  // off the address so a reload or the form remounting after a send doesn't bring it back.
+  useEffect(() => {
+    if (!prefillParam) return;
+    const url = new URL(window.location.href);
+    const prompt = url.searchParams.get(prefillParam)?.trim();
+    if (!prompt) return;
+    setValue(prompt);
+    url.searchParams.delete(prefillParam);
+    window.history.replaceState(window.history.state, "", url);
+  }, [prefillParam]);
   useEffect(() => {
     if (onSend) input.current?.focus({ preventScroll: true });
   }, [onSend]);
