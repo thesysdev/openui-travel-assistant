@@ -203,7 +203,7 @@ function Illustration({ icon, onMissing }: { icon: string; onMissing?: () => voi
     <img
       ref={img}
       src={withBase(`/icons-3d/${icon}-pixar.webp`)}
-      alt=""
+      alt={`${icon.replace(/-/g, " ")} illustration`}
       onLoad={(e) => e.currentTarget.classList.add("is-loaded")}
       onError={() => onMissing?.()}
     />
