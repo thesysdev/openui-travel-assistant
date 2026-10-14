@@ -165,7 +165,7 @@ export function WeatherLine({ weather: given }: { weather?: Weather }) {
   }
   const { words, sky } = condition(weather.code);
   // eslint-disable-next-line @next/next/no-img-element
-  const icon = <img className="pl-weather__icon" src={withBase(`/icons-3d/weather-${sky}.webp`)} alt="" />;
+  const icon = <img className="pl-weather__icon" src={withBase(`/icons-3d/weather-${sky}.webp`)} alt={words} />;
   const place = (
     <>
       <span className="pl-weather__flag" aria-hidden>
@@ -203,7 +203,7 @@ function Illustration({ icon, onMissing }: { icon: string; onMissing?: () => voi
     <img
       ref={img}
       src={withBase(`/icons-3d/${icon}-pixar.webp`)}
-      alt=""
+      alt={`${icon.replace(/-/g, " ")} illustration`}
       onLoad={(e) => e.currentTarget.classList.add("is-loaded")}
       onError={() => onMissing?.()}
     />
@@ -368,7 +368,7 @@ export function StaysRow({ stays }: { stays: Stays }) {
             >
               <span className="pl-stay__print">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {h.photo ? <img src={h.photo} alt="" /> : null}
+                {h.photo ? <img src={h.photo} alt={h.name} /> : null}
                 <SaveHeart
                   item={{
                     name: h.name,

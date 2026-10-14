@@ -82,7 +82,7 @@ export function Mascot({ size = 56, className }: { size?: number; className?: st
     >
       {/* The drawing fills the middle of its 2048 box; the frame crops to it. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={withBase("/mascot.svg")} alt="" draggable={false} />
+      <img src={withBase("/mascot.svg")} alt="Trip planner mascot" draggable={false} />
     </span>
   );
 }
