@@ -38,9 +38,6 @@ export function ChatView({ turns, onTurn }: { turns: ChatTurnData[]; onTurn: (tu
   const itinerary = useItinerary();
   const [pending, setPending] = useState<ChatTurnData | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
-  // Whether the reader is at the foot of the conversation: only then does a streaming reply
-  // carry the view down with it.
-  const atFoot = useRef(true);
   const all = [...turns, ...(pending ? [pending] : [])];
 
   // Open on the latest exchange, with its message at the top of the column.
@@ -52,8 +49,8 @@ export function ChatView({ turns, onTurn }: { turns: ChatTurnData[]; onTurn: (tu
     if (last && scroller.current) scroller.current.scrollTop = last.offsetTop - 88;
   }, []);
 
-  // A sent message glides to the top of the column; the reply then fills the room below it, so
-  // nothing on screen moves when it lands.
+  // A sent message glides to the top of the column once; the reply then fills the room below it
+  // as it streams, and the view stays where the reader leaves it.
   const glide = useRef(false);
   useEffect(() => {
     if (!glide.current || !pending) return;
@@ -61,18 +58,6 @@ export function ChatView({ turns, onTurn }: { turns: ChatTurnData[]; onTurn: (tu
     const last = scroller.current?.querySelector<HTMLElement>(".pl-chat-turn:last-child");
     if (last) scroller.current?.scrollTo({ top: last.offsetTop - 88, behavior: "smooth" });
   }, [pending]);
-
-  useEffect(() => {
-    const el = scroller.current;
-    if (!el) return;
-    const onScroll = () => (atFoot.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48);
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
-  useLayoutEffect(() => {
-    const el = scroller.current;
-    if (el && pending?.code && atFoot.current && !glide.current) el.scrollTop = el.scrollHeight;
-  }, [pending?.code]);
 
   async function send(prompt: string) {
     if (pending) return;
