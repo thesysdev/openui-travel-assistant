@@ -53,7 +53,7 @@ const modes: PlannerMode[] = ["explore", "chat", "itinerary"];
 /** The tab and trip the address names: /planner/<tab>?trip=<id>. */
 const fromUrl = () => {
   const tab = location.pathname.slice(BASE_PATH.length).match(/^\/planner\/(\w+)/)?.[1] as PlannerMode | undefined;
-  return { mode: tab && modes.includes(tab) ? tab : ("explore" as PlannerMode), trip: new URLSearchParams(location.search).get("trip") ?? undefined };
+  return { mode: tab && modes.includes(tab) ? tab : ("chat" as PlannerMode), trip: new URLSearchParams(location.search).get("trip") ?? undefined };
 };
 
 const KEY = "planner:v1";
@@ -93,7 +93,7 @@ export default function HorizontalJournal() {
   const [historyOpen, setHistoryOpen] = useState(false);
   // The Swiss grid overlay: Ctrl+G or ?grid (no button in the pill).
   const [grid] = useGridOverlay();
-  const [mode, setMode] = useState<PlannerMode>("explore");
+  const [mode, setMode] = useState<PlannerMode>("chat");
   const phone = usePhone();
   const [sheet, setSheet] = useState<Opened | null>(null);
   const sheetOpen = useRef(false);
@@ -129,14 +129,14 @@ export default function HorizontalJournal() {
   }, []);
 
   // The address follows the tab and the trip, so either can be shared, reloaded or gone back to:
-  // /planner/chat?trip=… (under the base path; history calls don't add it), and plain /planner for a new, empty trip on Explore. Switching tab or
+  // /planner/chat?trip=… (under the base path; history calls don't add it), and plain /planner for a new, empty trip on Chat. Switching tab or
   // trip adds a history entry; a trip getting its first entry only updates the address.
   const shown = useRef({ mode: "", id: "" });
   const popping = useRef(false);
   const activeHasAny = journals.some((j) => j.id === activeId && hasAny(j));
   useEffect(() => {
     if (!activeId) return;
-    const url = withBase(mode === "explore" && !activeHasAny ? "/planner" : `/planner/${mode}${activeHasAny ? `?trip=${activeId}` : ""}`);
+    const url = withBase(mode === "chat" && !activeHasAny ? "/planner" : `/planner/${mode}${activeHasAny ? `?trip=${activeId}` : ""}`);
     const moved = shown.current.mode !== mode || shown.current.id !== activeId;
     const first = !shown.current.id;
     shown.current = { mode, id: activeId };
