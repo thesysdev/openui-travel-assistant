@@ -89,7 +89,7 @@ export function ItineraryProvider({ trip, children }: { trip: string; children: 
   return (
     <ItineraryContext.Provider value={value}>
       {children}
-      <SaveIsland />
+      <SaveIsland key={trip} />
     </ItineraryContext.Provider>
   );
 }
@@ -119,13 +119,14 @@ export function SaveHeart({ item, className, label = true }: { item: Saveable; c
         e.stopPropagation();
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          if (!saved) flyToItinerary(item, e.currentTarget);
+          if (e.repeat) return;
+          flyToItinerary(item, e.currentTarget, saved ? "removed" : "added");
           itinerary.toggle(item);
         }
       }}
       onClick={(e) => {
         stop(e);
-        if (!saved) flyToItinerary(item, e.currentTarget);
+        flyToItinerary(item, e.currentTarget, saved ? "removed" : "added");
         itinerary.toggle(item);
       }}
     >
@@ -141,7 +142,7 @@ export function SaveButton({ item }: { item: Saveable }) {
   const saved = !!itinerary.find(item);
   return (
     <button type="button" className={`pl-save${saved ? " is-saved" : ""}`} aria-pressed={saved} onClick={(e) => {
-        if (!saved) flyToItinerary(item, e.currentTarget);
+        flyToItinerary(item, e.currentTarget, saved ? "removed" : "added");
         itinerary.toggle(item);
       }}>
       <Heart aria-hidden strokeWidth={2} />
@@ -169,37 +170,51 @@ export function PlannerTabs({ mode, onChange }: { mode: "explore" | "itinerary";
 
 /* ---------- Saving: a fly-in and a Dynamic Island ---------- */
 
-type Saved = { name: string; photo?: string; from: DOMRect };
+type Saved = { name: string; photo?: string; from: DOMRect; action: "added" | "removed" };
 const SAVED = "planner:saved";
 
-/** Announces a save from where it was tapped; SaveIsland draws the flight and the island. */
-export function flyToItinerary(item: Saveable, from: Element) {
-  window.dispatchEvent(new CustomEvent<Saved>(SAVED, { detail: { name: item.name, photo: item.photo, from: from.getBoundingClientRect() } }));
+/** Announces the toggle outcome; only additions fly into the itinerary. */
+export function flyToItinerary(item: Saveable, from: Element, action: Saved["action"] = "added") {
+  window.dispatchEvent(new CustomEvent<Saved>(SAVED, { detail: { name: item.name, photo: item.photo, from: from.getBoundingClientRect(), action } }));
 }
 
 // A spring that overshoots a little and settles, for the flight and the island.
 const spring = "linear(0, 0.13 6%, 0.5 15%, 0.86 25%, 1.03 34%, 1.07 41%, 1.04 52%, 1 64%, 0.99 78%, 1)";
 
-/** On a save, a small thumbnail of the photo arcs from the heart into the Itinerary tab, and the
- *  tabs briefly become a black pill (a Dynamic Island) saying what was saved, then spring back.
- *  Drawn as an overlay, so nothing on the page moves; saves in quick succession merge. */
+/** Feedback describes the latest action. A new action supersedes any pending flight/toast. */
 function SaveIsland() {
-  const [island, setIsland] = useState<{ name: string; photo?: string; count: number; at: number } | null>(null);
-  const closing = useRef(0);
+  const [island, setIsland] = useState<(Pick<Saved, "name" | "photo" | "action"> & { at: number }) | null>(null);
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let closing = 0;
+    let arriving = 0;
+    let thumb: HTMLImageElement | null = null;
+    let flight: Animation | null = null;
+    let sequence = 0;
+    const cancel = () => {
+      window.clearTimeout(closing);
+      window.clearTimeout(arriving);
+      flight?.cancel();
+      flight = null;
+      thumb?.remove();
+      thumb = null;
+    };
     const onSaved = (event: Event) => {
-      const { name, photo, from } = (event as CustomEvent<Saved>).detail;
+      cancel();
+      setIsland(null);
+      const at = ++sequence;
+      const { name, photo, from, action } = (event as CustomEvent<Saved>).detail;
       const target = document.querySelector(".pl-tabs [role=tab]:last-of-type")?.getBoundingClientRect();
       const open = () => {
-        // A save while the island is up merges into it ("2 places") and restarts its spring.
-        setIsland((now) => ({ name, photo, count: (now?.count ?? 0) + 1, at: Date.now() }));
-        window.clearTimeout(closing.current);
-        closing.current = window.setTimeout(() => setIsland(null), 1700);
+        setIsland({ name, photo, action, at });
+        closing = window.setTimeout(() => setIsland(null), 1700);
       };
-      if (reduce || !photo || !target) return open();
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (action === "removed" || reduce || !photo || !target?.width || !target.height) return open();
       // The thumbnail: from the heart, up and over in an arc, into the tab.
-      const thumb = document.createElement("img");
+      thumb = document.createElement("img");
+      thumb.alt = "";
+      thumb.setAttribute("aria-hidden", "true");
+      thumb.width = thumb.height = 56;
       thumb.src = photo;
       thumb.className = "pl-flight";
       const size = 56;
@@ -208,7 +223,7 @@ function SaveIsland() {
       document.body.appendChild(thumb);
       const dx = target.left + target.width / 2 - (from.left + from.width / 2);
       const dy = target.top + target.height / 2 - (from.top + from.height / 2);
-      const flight = thumb.animate(
+      flight = thumb.animate(
         [
           { transform: "translate(0, 0) scale(0.6)", opacity: 0 },
           { transform: `translate(${dx * 0.35}px, ${dy * 0.55 - 80}px) scale(1.05)`, opacity: 1, offset: 0.4 },
@@ -217,16 +232,18 @@ function SaveIsland() {
         { duration: 700, easing: "cubic-bezier(0.45, 0, 0.25, 1)" },
       );
       // On a timer rather than onfinish, so a paused animation (a hidden tab) never strands the thumb.
-      void flight;
-      window.setTimeout(() => {
-        thumb.remove();
+      arriving = window.setTimeout(() => {
+        flight?.cancel();
+        flight = null;
+        thumb?.remove();
+        thumb = null;
         open();
       }, 700);
     };
     window.addEventListener(SAVED, onSaved);
     return () => {
       window.removeEventListener(SAVED, onSaved);
-      window.clearTimeout(closing.current);
+      cancel();
     };
   }, []);
   if (!island) return null;
@@ -235,8 +252,8 @@ function SaveIsland() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {island.photo ? <img className="pl-island__thumb" src={island.photo} alt="" /> : <Heart className="pl-island__heart" aria-hidden />}
       <span className="pl-island__text">
-        <span className="pl-island__name">{island.count > 1 ? `${island.count} places` : island.name}</span>
-        <span className="pl-island__line">Saved to itinerary</span>
+        <span className="pl-island__name">{island.name}</span>
+        <span className="pl-island__line">{island.action === "added" ? "Saved to itinerary" : "Removed from itinerary"}</span>
       </span>
     </div>
   );

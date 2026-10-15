@@ -96,7 +96,8 @@
 
 /* ---------- Saving: the fly-in and the Dynamic Island ---------- */
 
-:where(.planner-page) .pl-flight {
+/* The flight is mounted on body, outside .planner-page. */
+body > .pl-flight {
   position: fixed;
   z-index: 1000;
   width: 56px;
@@ -176,13 +177,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   :where(.planner-page) .pl-island {
-    animation:
-      pl-fade-in 200ms ease-out both,
-      pl-island-out 200ms ease-in 1440ms forwards;
-  }
-}
-@keyframes pl-fade-in {
-  from {
-    opacity: 0;
+    animation: none;
   }
 }

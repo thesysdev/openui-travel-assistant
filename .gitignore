@@ -15,3 +15,7 @@ dev.log
 # The planner's local itinerary store (api/planner/itinerary).
 /data/
 .vercel
+
+# Local browser verification artifacts.
+.playwright-cli/
+output/
