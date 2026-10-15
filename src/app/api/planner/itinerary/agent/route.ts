@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { doodleNames, doodlePlaces } from "../../../../planner/doodle-names";
 import { type ItineraryItem, tripKey } from "../../../../../lib/itinerary";
 import { hasAllowedOrigin } from "../../../../../lib/same-origin";
+import { findPhoto } from "../../../../../lib/photos";
 
 // The itinerary board's agent. It takes the trip's items (sent by the browser) and one request ("group these by
 // day", "remove the museums", "add a note to the castle") and answers with the whole plan as
@@ -53,16 +54,8 @@ export async function POST(request: Request) {
   if (!apiKey) return Response.json({ error: "Set THESYS_API_KEY in .env.local." }, { status: 500 });
 
   // Explore's places join the saved ones (a place already saved stays as it is), with their photos.
-  const origin = new URL(request.url).origin;
-  const photoOf = async (subject?: string) => {
-    if (!subject) return undefined;
-    try {
-      const r = await fetch(`${origin}/api/moodboard/images?kind=named&q=${encodeURIComponent(subject)}`, { signal: request.signal });
-      return r.ok ? ((await r.json()) as { url?: string } | null)?.url : undefined;
-    } catch {
-      return undefined;
-    }
-  };
+  // Looked up in-process: a fetch to this app's own URL missed the base path it's deployed under.
+  const photoOf = async (subject?: string) => (subject ? (await findPhoto(subject.slice(0, 120)))?.url : undefined);
   // The board comes with the request, so nothing is written on the server: the answer is the new
   // board, which the browser saves.
   let items: ItineraryItem[] = Array.isArray(board) ? board.filter((i) => i?.id && i.name) : [];
