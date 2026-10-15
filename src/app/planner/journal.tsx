@@ -16,6 +16,7 @@ import { Breeze } from "./breeze";
 import { LatestArrow } from "./latest-arrow";
 import { TripBridge } from "./itinerary-spread";
 import { Mascot } from "./mascot";
+import { wholeSlides } from "./slides";
 import { readTraveller, travellerLine } from "./money";
 import { DetailSheet } from "./sheet";
 import { bookingOf, followUps, Reply } from "./steps";
@@ -197,7 +198,7 @@ export default function HorizontalJournal() {
   // stops. Later spreads arrive off to the right without moving the view; scrolling yourself, or
   // the newest-page arrow, ends it at once. Pages are counted without the closing page and the
   // "writing the next page" placeholder, so the target is always the real first spread.
-  const entryPages = () => pages().filter((p) => !p.classList.contains("pl-home"));
+  const entryPages = () => pages().filter((p) => !p.classList.contains("pl-home") && !p.classList.contains("hj-building"));
   useEffect(() => {
     const follow = following.current;
     const el = strip.current;
@@ -211,6 +212,30 @@ export default function HorizontalJournal() {
   useEffect(() => {
     if (!pending) following.current.on = false;
   }, [pending]);
+
+  // Each new spread is held back until its photos have loaded (at most 2.5s), then shown whole
+  // with one soft rise.
+  useEffect(() => {
+    for (const spread of strip.current?.querySelectorAll<HTMLElement>(".hj-spread:not([data-seen])") ?? []) {
+      spread.dataset.seen = "1";
+      if (!pending) continue;
+      spread.classList.add("is-holding");
+      const started = performance.now();
+      const check = () => {
+        const frames = [...spread.querySelectorAll(".hj-img")];
+        // A spread without photos (Dates, a Question) has nothing to wait for.
+        const loaded = frames.every((f) => {
+          const img = f.querySelector("img");
+          return img && img.complete && img.naturalWidth > 0;
+        });
+        if (loaded || performance.now() - started > 2500) {
+          spread.classList.remove("is-holding");
+          spread.classList.add("is-arriving");
+        } else window.setTimeout(check, 120);
+      };
+      check();
+    }
+  });
 
   // Scrolling is free: a vertical wheel scrolls the strip sideways as far as it turns, so a
   // mouse reads the planner like a trackpad. The arrow keys still step panel by panel.
@@ -312,6 +337,9 @@ export default function HorizontalJournal() {
     if (!active || pending) return;
     const id = active.id;
     const history = active.turns;
+    // What was said in Chat since Explore last picked it up, sent along quietly with this entry.
+    const chatAsks = resuming.current ? [] : (active.chat ?? []).slice(active.resumed ?? 0).map((t) => t.prompt.trim());
+    const chatUpTo = active.chat?.length ?? 0;
     // Follow the new entry in: the message's page replaces the closing page, then spreads arrive.
     following.current = { on: true, said: entryPages().length, step: 0 };
     let code = "";
@@ -320,7 +348,7 @@ export default function HorizontalJournal() {
       const response = await fetch(withBase("/api/planner"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, history, traveller: travellerLine(readTraveller()) }),
+        body: JSON.stringify({ prompt, history, chat: chatAsks, traveller: travellerLine(readTraveller()) }),
       });
       if (!response.ok || !response.body) throw new Error(await failure(response));
       const reader = response.body.getReader();
@@ -335,7 +363,7 @@ export default function HorizontalJournal() {
       if (!/^\s*root\s*=/m.test(code)) throw new Error("");
       update(id, (j) => {
         const next = [...j.turns, { prompt, code }];
-        const resumed = resuming.current?.id === id ? resuming.current.upTo : j.resumed;
+        const resumed = resuming.current?.id === id ? resuming.current.upTo : chatUpTo;
         return { ...j, turns: next, title: titleOf(next), updated: Date.now(), resumed, dates: datesIn({ prompt, code }) ?? j.dates };
       });
     } catch (error) {
@@ -354,13 +382,14 @@ export default function HorizontalJournal() {
     }
   }
 
-  // Decisions made in Chat carry over: opening Explore after new chat messages writes the next
-  // journal entry from them, so Explore picks up where the chat left off.
+  // Decisions made in Chat carry over. The first time Explore opens after a chat, it writes one
+  // "Carry on from our chat" entry from them; after that, newer chat messages go along quietly
+  // with the next thing asked in Explore (see send), so the carry-on is written once per trip.
   useEffect(() => {
     if (mode !== "explore" || !active || pending || resuming.current) return;
     const said = active.chat ?? [];
     const from = active.resumed ?? 0;
-    if (said.length <= from) return;
+    if (said.length <= from || active.turns.some((t) => t.prompt.startsWith("Carry on from our chat"))) return;
     const where = tripPlace ? ` about ${tripPlace}` : "";
     const asks = said.slice(from).map((t) => t.prompt.trim()).join("; ");
     resuming.current = { id: active.id, upTo: said.length };
@@ -405,15 +434,21 @@ export default function HorizontalJournal() {
       <div className={`hj-strip${pending ? " is-writing" : ""}`} ref={stripRef} style={mode !== "explore" ? { display: "none" } : undefined}>
         {turns.map((turn, i) => {
           const reply = readReply(turn.code, turn === pending);
+          // While it streams, only whole spreads are shown, in order (see slides.ts).
+          const slides = wholeSlides(reply.program, turn === pending);
           return (
             <div className="hj-entry" key={`${activeId}:${i}`}>
               <Said text={turn.prompt} writing={turn === pending} />
               <HotelsContext.Provider value={reply.hotels}>
                 {/* Only the newest finished entry's steps can be tapped; older ones show what was chosen. */}
                 <Reply.Provider value={{ send: !pending && i === turns.length - 1 ? send : undefined, answer: turns[i + 1]?.prompt }}>
-                  <Renderer response={reply.program} library={journalLibrary} isStreaming={turn === pending} />
+                  <Renderer response={slides.program} library={journalLibrary} isStreaming={false} />
                 </Reply.Provider>
               </HotelsContext.Provider>
+              {/* The next spread being written: one quiet placeholder rather than half a slide. */}
+              {turn === pending && slides.whole > 0 && slides.whole < Math.max(slides.total, slides.whole + 1) ? (
+                <section className="hj-page hj-building" aria-label="Writing the next page" />
+              ) : null}
             </div>
           );
         })}

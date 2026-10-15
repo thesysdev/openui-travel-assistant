@@ -62,15 +62,25 @@ function journalPrompt() {
 export async function POST(request: Request) {
   // No sign-in: accept requests only from this app's own pages, so scripts can't spend credit.
   if (!hasAllowedOrigin(request)) return Response.json({ error: "Not allowed." }, { status: 403 });
-  const { prompt, history, traveller } = (await request.json()) as { prompt?: string; history?: Turn[]; traveller?: string };
+  const { prompt, history, chat, traveller } = (await request.json()) as {
+    prompt?: string;
+    history?: Turn[];
+    chat?: string[];
+    traveller?: string;
+  };
   if (!prompt?.trim()) return Response.json({ error: "Write where you want to go." }, { status: 400 });
-  return streamAgent({
-    request,
+  const context = [
     // Where the traveller is (from the home page's weather) tells the agent where trips start
     // from: flight times, what counts as close, and what feels cheap.
-    system: traveller?.trim()
-      ? `${journalPrompt()}\n\n${traveller.trim().slice(0, 300)} Plan from there: say how far places are from home when it helps, and judge prices in their money.`
-      : journalPrompt(),
+    traveller?.trim()
+      ? `${traveller.trim().slice(0, 300)} Plan from there: say how far places are from home when it helps, and judge prices in their money.`
+      : "",
+    // What they've said in the Chat tab since the journal last heard: decisions to build on.
+    chat?.length ? `Since the last entry they said in the trip's chat: ${chat.slice(-8).join(" / ").slice(0, 600)}. Take it into account.` : "",
+  ].filter(Boolean);
+  return streamAgent({
+    request,
+    system: [journalPrompt(), ...context].join("\n\n"),
     messages: [
       ...(history ?? []).flatMap((turn) => [
         { role: "user" as const, content: turn.prompt },
