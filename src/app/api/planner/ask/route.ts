@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { modelOptions } from "../../../../lib/model";
 import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 // The Explore agent, asked from the Itinerary board: a short answer plus the places it suggests,
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
   const open = () =>
     gateway.chat.completions.create(
       {
-        model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+        ...modelOptions(),
         store: false,
         messages: [
           { role: "system", content: system },

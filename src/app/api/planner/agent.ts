@@ -3,6 +3,7 @@ import type {
   ChatCompletionMessageParam,
   ChatCompletionMessageFunctionToolCall as ToolCall,
 } from "openai/resources/chat/completions";
+import { modelOptions } from "../../../lib/model";
 import { executeSearchStays, searchStaysTool, today } from "../../../lib/tools/search-stays";
 
 // The journal's agent loop, shared by the entry and the detail sheet. It streams the program as
@@ -86,7 +87,7 @@ export function streamAgent({
         for (let step = 0; step < 3; step++) {
           const completion = await gateway.chat.completions.create(
             {
-              model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+              ...modelOptions(),
               store: false,
               messages: convo,
               tools: step < 2 ? [searchStaysTool()] : undefined,
