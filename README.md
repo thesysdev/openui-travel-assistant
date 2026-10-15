@@ -2,6 +2,8 @@
 
 An AI trip planner built with OpenUI: describe a trip and its answers are interfaces, not text. Explore ideas, chat about the trip, and turn it into a day-by-day itinerary on a map with live hotel prices from trivago.
 
+**[Try the live demo](https://www.openui.com/demo/trip-planner)**
+
 It grew out of the [booking assistant cookbook](https://github.com/thesysdev/openui/tree/main/examples/cookbooks/booking-assistant) in the OpenUI repo. The cookbook stays small and matches its [walkthrough](https://www.openui.com/cookbooks/booking-assistant); this repo is the full demo that gets deployed.
 
 ## Run it
