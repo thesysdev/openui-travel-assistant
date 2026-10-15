@@ -1,22 +1,25 @@
-import { Inter, Newsreader } from "next/font/google";
+import localFont from "next/font/local";
 
-// The app's two faces, loaded once. Newsreader stands in for the display serif and Inter for
-// interface type; both are open-licensed, so next/font fetches them at build time.
+// The app's two faces, loaded once: the Timeless type family. Its license (timeless/LICENSE.pdf)
+// allows embedding the fonts in an app but not redistributing the files, so they are
+// git-ignored and next/font serves them only as part of the pages that use them.
 //
 // Apply both `.variable` class names to a wrapper, then use:
-//   --font-display  Newsreader (variable weight 200-800, real italic)
-//   --font-ui       Inter (variable weight)
+//   --font-display  Timeless Serif (variable weight 200-700, real italic 300-700)
+//   --font-ui       Timeless Sans (variable weight)
 
-export const displaySerif = Newsreader({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
+export const displaySerif = localFont({
+  src: [
+    { path: "./timeless/TimelessSerifVF.woff2", weight: "200 700", style: "normal" },
+    { path: "./timeless/TimelessSerifItalicVF.woff2", weight: "300 700", style: "italic" },
+  ],
   variable: "--font-display",
   display: "swap",
   fallback: ["Georgia", "serif"],
 });
 
-export const uiSans = Inter({
-  subsets: ["latin"],
+export const uiSans = localFont({
+  src: [{ path: "./timeless/TimelessSansVF.woff2", weight: "300 800", style: "normal" }],
   variable: "--font-ui",
   display: "swap",
   fallback: ["system-ui", "sans-serif"],

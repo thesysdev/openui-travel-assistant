@@ -8,13 +8,14 @@ import { TripBridge } from "../itinerary-spread";
 import { HotelsContext, readReply } from "../library";
 import { readTraveller, travellerLine } from "../money";
 import { chatLibrary, ChatTurn } from "./chat-library";
+import { wholeBlocks } from "./chat-stream";
 import "./chat.css";
 import { withBase } from "../../../lib/base-path";
 
 // The Chat tab: the trip as a conversation with a travel agent, in one centred column on the
 // white page. Your messages are written in pencil, letter by letter, like the journal's; while
-// the agent works a pencil line keeps drawing under them, and the reply then renders as it
-// streams. Replies are OpenUI programs in the chat library (chat-library.tsx). The chat
+// the agent works a pencil line keeps drawing under them, and the reply then writes in as it
+// streams: type live, cards whole (chat-stream.ts). Replies are OpenUI programs in the chat library (chat-library.tsx). The chat
 // belongs to the trip, so it shares Explore's journal and the Itinerary board.
 
 export type ChatTurnData = { prompt: string; code: string };
@@ -183,7 +184,8 @@ export function ChatThinking() {
   );
 }
 
-/** One reply, rendered as it streams. */
+/** One reply. While it streams, type writes in live and each card appears whole, with a
+ *  shimmering placeholder while the next one arrives (chat-stream.ts). */
 export function ChatAnswer({
   code,
   turn,
@@ -194,7 +196,7 @@ export function ChatAnswer({
 }: {
   code: string;
   turn: string;
-  /** The reply is still arriving: it renders what has arrived so far. */
+  /** The reply is still arriving: show its whole blocks so far. */
   streaming?: boolean;
   send?: (text: string) => void;
   /** The message that followed this reply. */
@@ -202,7 +204,7 @@ export function ChatAnswer({
   programs?: string[];
 }) {
   const reply = readReply(code, streaming);
-  const program = reply.program;
+  const { program, waiting } = streaming ? wholeBlocks(reply.program) : { program: reply.program, waiting: false };
   return (
     <div className={`pl-chat-reply${streaming ? " is-streaming" : ""}`}>
       {/* The pencil line until the first words of the reply are in. */}
@@ -211,9 +213,10 @@ export function ChatAnswer({
         <div className="pl-chat-reply__body">
           <HotelsContext.Provider value={reply.hotels}>
             <ChatTurn.Provider value={{ send, turn, programs, answer }}>
-              <Renderer response={program} library={chatLibrary} isStreaming={streaming} />
+              <Renderer response={program} library={chatLibrary} isStreaming={false} />
             </ChatTurn.Provider>
           </HotelsContext.Provider>
+          {streaming && waiting ? <div className="pl-chat-arriving" aria-hidden /> : null}
         </div>
       ) : null}
     </div>

@@ -33,7 +33,7 @@ Open http://127.0.0.1:3000.
 | `/journal` | **Travel journal**: the trip told as a hand-drawn journal you scroll sideways. |
 | `/booking` | **Book a stay**: describe a stay in your own words, get a prefilled form, and pick from live trivago prices and photos. |
 
-The planner links to the others from its top-right corner, and each of them has a back arrow in its top-left corner.
+The others open at their own addresses, and each has a back arrow to the planner in its top-left corner.
 
 ## How it works
 
