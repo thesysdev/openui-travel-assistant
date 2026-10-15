@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { modelOptions } from "../../../../lib/model";
 import { hasAllowedOrigin } from "../../../../lib/same-origin";
 
 export const runtime = "nodejs";
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
   const completion = await gateway.chat.completions
     .create(
       {
-        model: process.env.OPENUI_MODEL || "openai/gpt-5.5",
+        ...modelOptions(),
         store: false,
         messages: [
           { role: "system", content: SYSTEM },

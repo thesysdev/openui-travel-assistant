@@ -16,13 +16,15 @@ npm run dev
 
 Open http://127.0.0.1:3000.
 
-| Variable              | Default          | Purpose                                                               |
-| --------------------- | ---------------- | --------------------------------------------------------------------- |
-| `THESYS_API_KEY`      | (required)       | OpenUI Gateway key, used only on the server                           |
-| `OPENUI_MODEL`        | `openai/gpt-5.5` | Model for every agent                                                 |
-| `PEXELS_API_KEY`      | (none)           | Optional extra photo source for the planner                           |
-| `UNSPLASH_ACCESS_KEY` | (none)           | Optional extra photo source for the planner                           |
-| `ALLOWED_ORIGINS`     | (none)           | Extra origins the API accepts, comma-separated, e.g. a preview domain |
+| Variable                  | Default                | Purpose                                                                                                            |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `THESYS_API_KEY`          | (required)             | OpenUI Gateway key, used only on the server                                                                        |
+| `OPENUI_MODEL`            | `openai/gpt-5.6-terra` | Model for every agent                                                                                              |
+| `OPENUI_REASONING_EFFORT` | `low`                  | How long the model reasons before it answers, e.g. `low`, `medium` or `high` (what's allowed depends on the model) |
+| `OPENUI_PROVIDER`         | (any)                  | Providers the model may run on, as comma-separated OpenRouter slugs, e.g. `cerebras/fp16`. No fallback when set    |
+| `PEXELS_API_KEY`          | (none)                 | Optional extra photo source for the planner                                                                        |
+| `UNSPLASH_ACCESS_KEY`     | (none)                 | Optional extra photo source for the planner                                                                        |
+| `ALLOWED_ORIGINS`         | (none)                 | Extra origins the API accepts, comma-separated, e.g. a preview domain                                              |
 
 ## What's in it
 
