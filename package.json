@@ -4,14 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate": "openui generate src/library.ts --spec --out src/generated/spec.json && openui generate src/moodboard/library.ts --spec --out src/generated/moodboard-spec.json",
     "generate:apiKey": "openui generate-api-key --file .env.local",
-    "predev": "npm run generate",
     "dev": "next dev --hostname 127.0.0.1",
-    "prebuild": "npm run generate",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
-    "preverify": "npm run generate",
     "verify": "next build"
   },
   "dependencies": {
@@ -20,14 +16,12 @@
     "@openuidev/react-headless": "0.18.0",
     "@openuidev/react-lang": "1.0.0",
     "@openuidev/react-ui": "0.18.0",
-    "@openuidev/server": "0.3.0",
     "lucide-react": "^1.55.0",
     "maplibre-gl": "^6.13.0",
     "next": "16.4.0",
     "openai": "^7.32.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "tldraw": "^5.5.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
