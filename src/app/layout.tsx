@@ -1,6 +1,7 @@
 import "@openuidev/react-ui/styles/index.css";
 import type { Metadata } from "next";
 import "./styles.css";
+import { Analytics } from "./analytics";
 
 const description =
   "AI trip planner that designs your trip as you chat: moodboard, day-by-day itinerary, map and live hotel prices. Built with OpenUI generative UI.";
@@ -18,7 +19,10 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
