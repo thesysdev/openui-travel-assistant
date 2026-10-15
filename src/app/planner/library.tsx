@@ -215,8 +215,10 @@ type PenProps = { text?: string; arrow?: ArrowStyle; dir?: ArrowDir };
 
 /** A handwritten note in the hand font (Reenie Beanie) with its arrow on the side it points to. */
 export function Pen({ note, color, className, style }: { note?: PenProps | string; color: string; className?: string; style?: CSSProperties }) {
-  const { text, arrow, dir = "right" } = typeof note === "string" ? { text: note } : (note ?? {});
+  const { text, arrow, dir: given } = typeof note === "string" ? { text: note } : (note ?? {});
   if (!text) return null;
+  // Some models fill an optional argument with null rather than leaving it out.
+  const dir = given ?? "right";
   const before = dir === "left" || dir === "up" || dir.startsWith("up-");
   const stacked = dir !== "left" && dir !== "right";
   const mark = arrow ? <HandArrow style={arrow} dir={dir} color={color} /> : null;
