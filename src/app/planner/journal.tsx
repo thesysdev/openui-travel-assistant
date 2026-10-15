@@ -2,7 +2,7 @@
 
 import { Renderer } from "@openuidev/react-lang";
 import { History, Plus } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { HotelsContext, journalLibrary, type Opened, readReply, SheetOpener } from "./library";
 import { GridOverlay, useGridOverlay } from "./grid-overlay";
 import dynamic from "next/dynamic";
@@ -12,7 +12,6 @@ import { ChatView, type ChatTurnData } from "./chat/chat";
 import { placeOf } from "./chat/chat-library";
 import { iconFor } from "./place-icon";
 import { type PlannerMode, PlannerChatTabs } from "./chat/chat-tabs";
-import { DemoLinks } from "./demo-links";
 import { Breeze } from "./breeze";
 import { LatestArrow } from "./latest-arrow";
 import { TripBridge } from "./itinerary-spread";
@@ -28,6 +27,15 @@ import { BASE_PATH, withBase } from "../../lib/base-path";
 // one. What you type stays on the page you typed it on; new pages are added after it. Journals live in this browser's storage.
 
 type Turn = { prompt: string; code: string };
+
+// On phones the planner is the Chat alone: Explore and the Itinerary board are for wider screens.
+const PHONE = "(max-width: 760px)";
+const onPhoneChange = (change: () => void) => {
+  const query = window.matchMedia(PHONE);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
+const usePhone = () => useSyncExternalStore(onPhoneChange, () => window.matchMedia(PHONE).matches, () => false);
 // A trip's chat (the Chat tab) is kept with its journal, so the two share one trip.
 type Journal = {
   id: string;
@@ -45,7 +53,7 @@ const modes: PlannerMode[] = ["explore", "chat", "itinerary"];
 /** The tab and trip the address names: /planner/<tab>?trip=<id>. */
 const fromUrl = () => {
   const tab = location.pathname.slice(BASE_PATH.length).match(/^\/planner\/(\w+)/)?.[1] as PlannerMode | undefined;
-  return { mode: tab && modes.includes(tab) ? tab : ("explore" as PlannerMode), trip: new URLSearchParams(location.search).get("trip") ?? undefined };
+  return { mode: tab && modes.includes(tab) ? tab : ("chat" as PlannerMode), trip: new URLSearchParams(location.search).get("trip") ?? undefined };
 };
 
 const KEY = "planner:v1";
@@ -85,7 +93,8 @@ export default function HorizontalJournal() {
   const [historyOpen, setHistoryOpen] = useState(false);
   // The Swiss grid overlay: Ctrl+G or ?grid (no button in the pill).
   const [grid] = useGridOverlay();
-  const [mode, setMode] = useState<PlannerMode>("explore");
+  const [mode, setMode] = useState<PlannerMode>("chat");
+  const phone = usePhone();
   const [sheet, setSheet] = useState<Opened | null>(null);
   const sheetOpen = useRef(false);
   sheetOpen.current = !!sheet;
@@ -120,14 +129,14 @@ export default function HorizontalJournal() {
   }, []);
 
   // The address follows the tab and the trip, so either can be shared, reloaded or gone back to:
-  // /planner/chat?trip=… (under the base path; history calls don't add it), and plain /planner for a new, empty trip on Explore. Switching tab or
+  // /planner/chat?trip=… (under the base path; history calls don't add it), and plain /planner for a new, empty trip on Chat. Switching tab or
   // trip adds a history entry; a trip getting its first entry only updates the address.
   const shown = useRef({ mode: "", id: "" });
   const popping = useRef(false);
   const activeHasAny = journals.some((j) => j.id === activeId && hasAny(j));
   useEffect(() => {
     if (!activeId) return;
-    const url = withBase(mode === "explore" && !activeHasAny ? "/planner" : `/planner/${mode}${activeHasAny ? `?trip=${activeId}` : ""}`);
+    const url = withBase(mode === "chat" && !activeHasAny ? "/planner" : `/planner/${mode}${activeHasAny ? `?trip=${activeId}` : ""}`);
     const moved = shown.current.mode !== mode || shown.current.id !== activeId;
     const first = !shown.current.id;
     shown.current = { mode, id: activeId };
@@ -156,6 +165,11 @@ export default function HorizontalJournal() {
       localStorage.setItem(KEY, JSON.stringify(journals.filter(hasAny)));
     } catch {}
   }, [journals]);
+
+  // A phone opens every tab, link or trip on Chat, its only tab.
+  useEffect(() => {
+    if (phone && mode !== "chat") setMode("chat");
+  }, [phone, mode]);
 
   const active = journals.find((j) => j.id === activeId);
   const turns = [...(active?.turns ?? []), ...(pending ? [pending] : [])];
@@ -365,10 +379,9 @@ export default function HorizontalJournal() {
 
   return (
     <ItineraryProvider trip={activeId}>
-      {/* The mascot is always in its corner; the tabs appear once a trip has started. */}
+      {/* The mascot is always in its corner. On phones Chat is the only tab, so there's no tab bar. */}
       <Mascot className="pl-mascot--corner" />
-      <PlannerChatTabs mode={mode} onChange={setMode} />
-      <DemoLinks />
+      {phone ? null : <PlannerChatTabs mode={mode} onChange={setMode} />}
       <TripBridge.Provider
         value={{ programs: turns.map((t) => readReply(t.code).program), prompts: said, dates: tripDates, place: tripPlace, openBoard: () => setMode("itinerary") }}
       >

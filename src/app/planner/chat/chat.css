@@ -126,9 +126,18 @@
   }
 }
 
-/* A reply waits, unseen, for its photos, then rises in whole. */
+/* A reply writes in as it streams: type live, each card whole once it has arrived. */
 :where(.planner-page) .pl-chat-reply {
   position: relative;
+}
+
+/* While a card is still arriving, its place shimmers below the blocks so far. */
+:where(.planner-page) .pl-chat-arriving {
+  height: 180px;
+  margin-top: 28px;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #eef0f2 30%, #f7f8f9 50%, #eef0f2 70%) 0 0 / 300% 100%;
+  animation: pl-shimmer 1.4s linear infinite;
 }
 
 :where(.planner-page) .pl-chat-reply__blocks {

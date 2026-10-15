@@ -466,6 +466,10 @@ html:has(.planner-page) body {
 /* ---------- Narrow screens ---------- */
 
 @media (max-width: 760px) {
+  /* Chat is the only tab on phones (journal.tsx); hidden here too so it never shows before then. */
+  :where(.planner-page) .pl-tabs.pl-tabs--three {
+    display: none;
+  }
   :where(.planner-page) .hj-ask {
     padding: 88px 20px 32px;
   }
